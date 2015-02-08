@@ -184,10 +184,21 @@ optgroup {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+  overflow: auto;
+  height: 50%;
 }
+table tbody{
+  height: 100px;
+  overflow: auto;
+}
+
+
 td,
 th {
   padding: 0;
+  word-wrap: break-word;
+  max-width: 150px;
+  max-height: 50px;
 }
 /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print {

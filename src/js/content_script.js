@@ -138,15 +138,31 @@ catch(e){
 
 injectScript(scriptToInject);
 
-window.addEventListener("message", function(event){
-  // We only accept messages from ourselves
-  if (event.source != window)
-    return;
+chrome.storage.local.get(null, function(db){
+	window.addEventListener("message", function(event){
+	  // We only accept messages from ourselves
+	  if (event.source != window)
+	    return;
 
-  if (event.data.type && (event.data.type == "FROM_HOOKISH")){
-		chrome.runtime.sendMessage({hooks: event.data.obj});
-  }
-}, false);
+	  if (event.data.type && (event.data.type == "FROM_HOOKISH")){
+			var stats = db.stats;
+			// insert only if domain matches the current filter.
+			if(event.data.obj.domain.search(db.domain) != -1){
+				// insert only if its not a duplicate
+				stats.forEach(function(stat){
+					if(JSON.stringify(stat) == JSON.stringify(event.data.obj));
+					// DO not insert, PS: lots of optimizations possible
+					console.log('Not inserted');
+					return;
+				});
+				stats.push(event.data.obj);
+				chrome.storage.local.set({'stats': stats});
+	  	}
+	  }
+	}, false);
+});
+
+
 
 /*
 https://developer.chrome.com/extensions/content_scripts.html#host-page-communication
