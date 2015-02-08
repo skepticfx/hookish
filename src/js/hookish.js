@@ -3,20 +3,27 @@ $(function(){
     // Bootstrap switch
     chrome.storage.local.get(null, function(db){
       $('#status').bootstrapSwitch('state', db.state);
+      if(db.state)  $('#domain').html(db.domain);
       $('#status').on('switchChange.bootstrapSwitch', function (event, state) {
           if(state == true){
             bootbox.prompt({title:'Enter the domain you want to run Hookish! (Eg: github.com)', value: db.domain,callback: function(domain){
               if(domain != null) {
                 chrome.storage.local.set({'domain': domain});
                 chrome.storage.local.set({'state': true});
+                $('#domain').html(domain);
+                // update table
               }
               else{
                 $('#status').bootstrapSwitch('state', false);  
+                $('#domain').html('');
                 return;
               }
             }});
           } else {
             chrome.storage.local.set({'state': false});
+            $('#domain').html('');
+            chrome.storage.local.set({stats: []});
+            // need to update table,
           }
       });
 
