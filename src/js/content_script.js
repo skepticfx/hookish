@@ -1,5 +1,7 @@
 //console.log("Injecting stuff");
 
+
+
 function injectScript(func) {
     var actualCode = '(' + func + ')();'
 	var script = document.createElement('script');
@@ -135,8 +137,13 @@ catch(e){
 } // End of Function - scriptToInject
 
 // Write to File Stuff
-
-injectScript(scriptToInject);
+chrome.storage.local.get('domain', function(data){
+	if(document.domain.search(data.domain) != -1){
+		// good to inject
+		console.log('Injecting Hookish! hooks.')
+		injectScript(scriptToInject);
+	}
+});
 
 
 window.addEventListener("message", function(event){
