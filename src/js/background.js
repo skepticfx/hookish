@@ -44,29 +44,7 @@ chrome.storage.local.get(null, function(db){
 	// We have a message. Need to check performance.
 	chrome.runtime.onMessage.addListener( function(request, sender, sendResponse){
 		
-		// Receiving the hooks.
-		// All Requests from the Web Pages + Content Scripts
-	    if (typeof request.hooks !== 'undefined'){
-	      //console.log(request.hooks);
 
-		  GLOBAL.hooks.push(request.hooks);
-		}
-		
-		// IronWASP Queries
-	    if (typeof request.ironwasp !== 'undefined'){
-			sendResponse(GLOBAL.IronWASP);
-		}	
-		
-		// Data Queries
-	    if (typeof request.allData !== 'undefined'){
-			sendResponse(GLOBAL.hooks);
-		}	
-		
-		// Reset Data
-	    if (typeof request.resetData !== 'undefined'){
-			GLOBAL.hooks = [];
-			sendResponse(1);
-		}		
 	});
 
 	})

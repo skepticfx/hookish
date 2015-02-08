@@ -138,30 +138,31 @@ catch(e){
 
 injectScript(scriptToInject);
 
-chrome.storage.local.get(null, function(db){
-	window.addEventListener("message", function(event){
-	  // We only accept messages from ourselves
-	  if (event.source != window)
-	    return;
 
+window.addEventListener("message", function(event){
+	if (event.source != window)
+	  return;
+	chrome.storage.local.get(null, function(db){
+	  // We only accept messages from ourselves
 	  if (event.data.type && (event.data.type == "FROM_HOOKISH")){
 			var stats = db.stats;
+			var incoming = event.data.obj;
+
 			// insert only if domain matches the current filter.
-			if(event.data.obj.domain.search(db.domain) != -1){
+			if(incoming.domain.search(db.domain) != -1){
 				// insert only if its not a duplicate
 				stats.forEach(function(stat){
-					if(JSON.stringify(stat) == JSON.stringify(event.data.obj));
+					if(JSON.stringify(stat) == JSON.stringify(incoming));
 					// DO not insert, PS: lots of optimizations possible
 					console.log('Not inserted');
 					return;
 				});
-				stats.push(event.data.obj);
+				stats.push(incoming);
 				chrome.storage.local.set({'stats': stats});
 	  	}
 	  }
-	}, false);
-});
-
+	});
+}, false);
 
 
 /*
