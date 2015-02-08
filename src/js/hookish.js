@@ -7,7 +7,7 @@ $(function(){
       $('#status').on('switchChange.bootstrapSwitch', function (event, state) {
           if(state == true){
             bootbox.prompt({title:'Enter the domain you want to run Hookish! (Eg: github.com)', value: db.domain,callback: function(domain){
-              if(domain != null) {
+              if(domain != null && domain.length > 0) {
                 chrome.storage.local.set({'domain': domain});
                 chrome.storage.local.set({'state': true});
                 $('#domain').html(domain);
