@@ -1,10 +1,4 @@
-/*!
- * Start Bootstrap - Freelancer Bootstrap Theme (http://startbootstrap.com)
- * Code licensed under the Apache License v2.0.
- * For details, see http://www.apache.org/licenses/LICENSE-2.0.
- */
 
-// jQuery for page scrolling feature - requires jQuery Easing plugin
 $(function(){
     // Bootstrap switch
     chrome.storage.local.get(null, function(db){
@@ -12,15 +6,21 @@ $(function(){
       $('#status').on('switchChange.bootstrapSwitch', function (event, state) {
           if(state == true){
             bootbox.prompt({title:'Enter the domain you want to run Hookish! (Eg: github.com)', value: db.domain,callback: function(domain){
-              if(domain != null) chrome.storage.local.set({'domain': domain});
-              if(domain == null) return;
-              chrome.storage.local.set({'state': true});
+              if(domain != null) {
+                chrome.storage.local.set({'domain': domain});
+                chrome.storage.local.set({'state': true});
+
+              }
+              else{
+                $('#status').bootstrapSwitch('state', false);  
+                return;
+              }
             }});
           } else {
             chrome.storage.local.set({'state': false});
           }
       });
-    });
+
 
     // DOM Sources & Sinks
 
@@ -32,6 +32,7 @@ $(function(){
         }, 1500, 'easeInOutExpo');
         event.preventDefault();
     });
+  });
 });
 
 // Floating label headings for the contact form
