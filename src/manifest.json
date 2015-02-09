@@ -12,9 +12,17 @@
       "scripts": [ "js/background.js" ]
    },
    "browser_action": {
-      "default_icon": "/icons/icon-38.png",
+      "default_icon": {
+         "19": "/icons/hook19.png",
+         "38": "/icons/hook38.png"
+         },
       "default_title": "Hookish !"
    },
+   "icons": {
+        "16": "/icons/hook16.png",
+        "48": "/icons/hook48.png",
+        "128": "/icons/hook128.png"
+    },
    "content_scripts": [ {
       "js": [ "js/content_script.js" ],
       "matches": [ "<all_urls>" ],
