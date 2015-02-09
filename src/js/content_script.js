@@ -137,40 +137,33 @@ catch(e){
 } // End of Function - scriptToInject
 
 // Write to File Stuff
-chrome.storage.local.get('domain', function(data){
-	if(document.domain.search(data.domain) != -1){
+chrome.storage.local.get(null, function(db){
+	if(document.domain.search(db.domain) != -1){
 		// good to inject
 		console.log('Injecting Hookish! hooks.')
 		injectScript(scriptToInject);
+		var hooks = db.stats;
+
+		window.addEventListener("message", function(event){
+			if(event.source != window)	return;
+			if(event.data.type && (event.data.type == "FROM_HOOKISH")){
+				var incoming = event.data.obj;
+				// insert only if filter matches the current domain
+				if(incoming.domain.search(db.domain) != -1){
+					for(hook in hooks){
+						if(JSON.stringify(hooks[hook]) == JSON.stringify(incoming)){
+							console.log('Not Inserted');
+							return;
+						}
+					}
+					hooks.push(incoming);
+					chrome.storage.local.set({'stats': hooks});
+				}
+			}
+		}, false)
+
 	}
 });
-
-
-window.addEventListener("message", function(event){
-	if (event.source != window)
-	  return;
-	chrome.storage.local.get(null, function(db){
-	  // We only accept messages from ourselves
-	  if (event.data.type && (event.data.type == "FROM_HOOKISH")){
-			var stats = db.stats;
-			var incoming = event.data.obj;
-
-			// insert only if domain matches the current filter.
-			if(incoming.domain.search(db.domain) != -1){
-				// insert only if its not a duplicate
-				stats.forEach(function(stat){
-					if(JSON.stringify(stat) == JSON.stringify(incoming));
-					// DO not insert, PS: lots of optimizations possible
-					console.log('Not inserted');
-					return;
-				});
-				stats.push(incoming);
-				chrome.storage.local.set({'stats': stats});
-	  	}
-	  }
-	});
-}, false);
-
 
 /*
 https://developer.chrome.com/extensions/content_scripts.html#host-page-communication

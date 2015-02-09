@@ -4,6 +4,25 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+
+section.settings {
+  color: #fff;
+  background: #ff3e50;
+}
+
+.fill-page{
+  min-height: 100%;
+  height:auto !important;
+}
+
+.align-center{
+  left: 33%;
+}
+
+ #domain{
+  font-size: 18px;
+}
+
 body {
     overflow-x: hidden;
 }
@@ -44,6 +63,11 @@ hr.star-primary {
     border: 0;
     border-top: solid 5px;
     text-align: center;
+}
+
+hr#star-settings{
+  color: #fff;
+  background: #ff3e50;
 }
 
 hr.star-light:after,
@@ -178,6 +202,7 @@ section h2 {
     margin: 0;
     font-size: 3em;
 }
+
 
 section.success {
     color: #fff;
