@@ -138,7 +138,7 @@ catch(e){
 
 // Write to File Stuff
 chrome.storage.local.get(null, function(db){
-	if(document.domain.search(db.domain) != -1){
+	if(db.state == true && document.domain.search(db.domain) != -1){
 		// good to inject
 		console.log('Injecting Hookish! hooks.')
 		injectScript(scriptToInject);
