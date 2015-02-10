@@ -148,6 +148,7 @@ chrome.storage.local.get(null, function(db){
 			if(event.source != window)	return;
 			if(event.data.type && (event.data.type == "FROM_HOOKISH")){
 				var incoming = event.data.obj;
+				if(db.settings.domss_empty_values == true && incoming.data.length == 0)  return;
 				// insert only if filter matches the current domain
 				if(incoming.domain.search(db.domain) != -1){
 					for(hook in hooks){

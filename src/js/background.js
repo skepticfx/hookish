@@ -7,8 +7,14 @@ var homeWindow = "";
 var GLOBAL = {};
 
 chrome.storage.local.get(null, function(db){
-	// reset, dont care
+	// reset, dont care. Turn off.
 	chrome.storage.local.set({stats: []});
+	chrome.storage.local.set({state: false});
+	chrome.storage.local.set({settings: {
+			'domss_empty_values': false
+		}
+	});
+
 
 
 

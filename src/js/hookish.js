@@ -41,7 +41,10 @@ $(function(){
 
 
     // Settings
-    $('#settings_domss_empty_values').bootstrapSwitch('state', db.state);
+    $('#settings_domss_empty_values').bootstrapSwitch('state', db.settings.domss_empty_values);
+    $('#settings_domss_empty_values').on('switchChange.bootstrapSwitch', function (event, state) {
+      chrome.storage.local.set({'settings': {'domss_empty_values': state}});      
+    });
 
 
     $('body').on('click', '.page-scroll a', function(event) {
