@@ -4,10 +4,10 @@
 var HOME_STATE = 'CLOSED';
 var homeTab = "";
 var homeWindow = "";
-var GLOBAL = {};
 
 chrome.storage.local.get(null, function(db){
-	// reset, dont care. Turn off.
+	// The extension has been restarted.
+	// Reset all
 	chrome.storage.local.set({stats: []});
 	chrome.storage.local.set({state: false});
 	chrome.storage.local.set({settings: {
@@ -15,18 +15,6 @@ chrome.storage.local.get(null, function(db){
 		}
 	});
 
-
-
-
-
-
-
-
-	// All the hooks goes here.
-	GLOBAL.hooks = [];
-
-
-	//chrome.browserAction.setBadgeText({text: "10+"});
 	chrome.browserAction.setBadgeBackgroundColor({color: '#45c89f'});
 
 	// Called when the user clicks on the browser action.
@@ -47,10 +35,4 @@ chrome.storage.local.get(null, function(db){
 		}
 	});
 
-	// We have a message. Need to check performance.
-	chrome.runtime.onMessage.addListener( function(request, sender, sendResponse){
-		
-
-	});
-
-	})
+});
