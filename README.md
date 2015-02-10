@@ -1,6 +1,6 @@
 # Hookish!
 Hooks in to interesting functions and helps reverse the web app faster.
-![alt tag](https://raw.githubusercontent.com/skepticfx/hookish/master/assets/github/hook128.png)
+![alt tag](https://raw.githubusercontent.com/skepticfx/hookish/master/assets/github/hook32.png)
 
 Get it here form the Chrome Store <a href="https://chrome.google.com/webstore/detail/hookish/alndlomanifdcgjkdedlkpgobcefcapn?hl=en" target="_blank">![alt tag](https://raw.githubusercontent.com/skepticfx/hookish/master/assets/github/chromestore.png)</a>
 
