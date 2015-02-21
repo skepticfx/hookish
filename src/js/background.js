@@ -21,6 +21,17 @@ chrome.storage.local.get(null, function(db){
 			'domss_empty_values': false
 		}
 	});
+	chrome.storage.local.set({dom:{
+		settings:{
+			sources:{
+				document_location_hash: true
+			},
+			sinks:{
+				window_eval: true,
+				document_write: true
+			}
+		}
+	}});
 
 	chrome.browserAction.setBadgeBackgroundColor({color: '#45c89f'});
 
@@ -43,5 +54,3 @@ chrome.storage.local.get(null, function(db){
 	});
 
 });
-
-dasdas
