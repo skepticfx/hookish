@@ -1,6 +1,13 @@
 // BootStrap
 // NOT_STARTED -> STARTED -> RUNNING -> CLOSED -> NOT_STARTED
-
+var devMode = false;
+console.log(chrome.runtime.getManifest())
+if(chrome.runtime.getManifest().update_url == null){
+	devMode = true;
+	window.onerror = function(err){
+		alert("Some error occured: "+err);
+	}
+}
 var HOME_STATE = 'CLOSED';
 var homeTab = "";
 var homeWindow = "";
@@ -36,3 +43,5 @@ chrome.storage.local.get(null, function(db){
 	});
 
 });
+
+dasdas
