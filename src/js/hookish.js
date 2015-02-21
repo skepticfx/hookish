@@ -31,10 +31,10 @@ $(function(){
     // DOM Sources & Sinks
     var stats = db.stats;
     if(stats.length < 1){
-      $('#domssTableBody').append('<tr><td colspan=4>No stats collected yet!</td></tr>');
+      $('#domssTableBody').append('<tr><td id="noDomssStats" colspan=4>No stats collected yet!</td></tr>');
     } else{
         stats.forEach(function(stat){
-          Utils.addToTable(stat);
+          Utils.addToDomssTable(stat);
         });
     }
 
@@ -55,6 +55,18 @@ $(function(){
         event.preventDefault();
     });
   });
+
+
+  // Listen to dynamic chrome.storage events
+  chrome.storage.onChanged.addListener(function(changes){
+    var doItOnce = true;
+    if(changes.stats != null){
+      if(doItOnce)
+        $('#noDomssStats').remove();
+      Utils.addToDomssTable(changes.stats.newValue[changes.stats.newValue.length-1]);
+    }
+  })
+
 });
 
 

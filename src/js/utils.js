@@ -8,7 +8,7 @@ var Utils = {
 	  return data.substr(0,len-4) + " ...";
 	},
 
-	addToTable: function(stat){
+	addToDomssTable: function(stat){
 	  $('#domssTableBody').prepend('<tr><td><strong>' + stat.nature + '</strong></td><td>' + stat.type + '</td><td title="'+stat.data.replace(/"/gi,'%22')+'">'+ this.stripped(stat.data,50) +'</td><td>'+stat.href+'</td></tr>');
 	}
 	
