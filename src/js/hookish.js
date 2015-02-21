@@ -34,7 +34,7 @@ $(function(){
       $('#domssTableBody').append('<tr><td colspan=4>No stats collected yet!</td></tr>');
     } else{
         stats.forEach(function(stat){
-          addToTable(stat);
+          Utils.addToTable(stat);
         });
     }
 
