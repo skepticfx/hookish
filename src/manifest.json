@@ -4,7 +4,7 @@
    "manifest_version": 2,
    "short_name": "Hook Dom sources and sinks.",
    "update_url": "https://clients2.google.com/service/update2/crx",
-   "version": "0.3.31",
+   "version": "0.3.4",
 
    "permissions": [ "tabs", "<all_urls>", "storage" ],
    "background": {
