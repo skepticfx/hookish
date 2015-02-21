@@ -1,5 +1,7 @@
 
 $(function(){
+    // Update the version info
+    $('#version-info').text("v"+chrome.runtime.getManifest().version)
     // Bootstrap switch
     chrome.storage.local.get(null, function(db){
       $('#status').bootstrapSwitch('state', db.state);
