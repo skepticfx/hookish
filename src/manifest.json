@@ -22,7 +22,9 @@
         "128": "/icons/hook128.png"
     },
    "content_scripts": [ {
-      "js": [ "js/content_script.js" ],
+      "js": [ 
+        "js/content_script.js" 
+        ],
       "matches": [ "<all_urls>" ],
       "run_at": "document_start"
    } ],
