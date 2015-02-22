@@ -5,7 +5,7 @@ chrome.storage.local.get(null, function(db) {
     var domSettings = db.dom.settings;
 
     // Load required libraries to inject
-    if(domSettings.xhr.enabled){
+    if (domSettings.xhr.enabled) {
       injectString.push(libsToInject.xhook);
     }
 

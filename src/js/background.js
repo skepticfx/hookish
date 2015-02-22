@@ -36,7 +36,7 @@ chrome.storage.local.get(null, function(db) {
           document_write: true
         },
         xhr: {
-        	enabled: true
+          enabled: true
         }
       }
     }
