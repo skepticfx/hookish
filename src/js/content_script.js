@@ -1,3 +1,4 @@
+alert(domHooks);
 chrome.storage.local.get(null, function(db) {
   if (db.state == true && document.domain.search(db.domain) != -1) {
     // good to inject
@@ -6,80 +7,17 @@ chrome.storage.local.get(null, function(db) {
     var domSettings = db.dom.settings;
 
     // Tracking variables
-    injectString.push(function() {
-      var original_document_domain = document.domain;
-      var track = {};
-      track.domain = original_document_domain; // How funny, we could have used a hooked value.
-      track.href = document.location.href; // This cannot be hooked in browsers today.
-      track.sources = [];
-      track.sinks = [];
+    injectString.push(domHooks.init);
 
-      track.sources.add = function(obj) {
-        track.sources.push(obj);
-        console.log(obj.type + " called with value " + obj.data.slice(0, 100));
-        obj.nature = 'source';
-        obj.domain = track.domain;
-        obj.href = track.href;
-        window.postMessage({
-          type: "FROM_HOOKISH",
-          'obj': obj
-        }, "*");
-      }
-
-      track.sinks.add = function(obj) {
-        track.sinks.push(obj);
-        console.log(obj.type + " called with value " + obj.data.slice(0, 100));
-        obj.nature = 'sink';
-        obj.domain = track.domain;
-        obj.href = track.href;
-        window.postMessage({
-          type: "FROM_HOOKISH",
-          'obj': obj
-        }, "*");
-      }
-    })
+    if (domSettings.sources.document_location_hash)
+      injectString.push(domHooks.sources.document_location_hash);
 
 
-    if (domSettings.sources.document_location_hash) {
-      injectString.push(function() {
-        var original_document_location_hash = document.location.hash;
-        Object.defineProperty(document.location, "hash", {
-          get: function() {
-            track.sources.add(new Object({
-              'type': 'document.location.hash',
-              'data': original_document_location_hash
-            }));
-            return original_document_location_hash;
-          }
-        });
-      });
-    }
+    if (domSettings.sinks.window_eval)
+      injectString.push(domHooks.sinks.window_eval);
 
-
-    if (domSettings.sinks.window_eval) {
-      injectString.push(function() {
-        var original_window_eval = window.eval;
-        window.eval = function() {
-          track.sinks.add(new Object({
-            'type': 'eval',
-            'data': arguments[0]
-          }));
-          return original_window_eval.apply(this, arguments);
-        }
-      })
-    }
-    if (domSettings.sinks.document_write) {
-      injectString.push(function() {
-        var original_document_write = document.write;
-        document.write = function(x) {
-          track.sinks.add(new Object({
-            'type': 'document.write',
-            'data': arguments[0]
-          }));
-          return original_document_write.apply(this, arguments);
-        }
-      })
-    }
+    if (domSettings.sinks.document_write)
+      injectString.push(domHooks.sinks.document_write);
 
     // Generate the script to inject from the array of functions.
     var scriptToInject = "";

@@ -23,6 +23,7 @@
     },
    "content_scripts": [ {
       "js": [ 
+        "js/domHooks.js",
         "js/content_script.js" 
         ],
       "matches": [ "<all_urls>" ],
