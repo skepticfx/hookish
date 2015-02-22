@@ -23,7 +23,7 @@
     },
    "content_scripts": [ {
       "js": [ 
-        "js/xhook.js",
+        "js/libsToInject.js",
         "js/domHooks.js",
         "js/content_script.js" 
         ],

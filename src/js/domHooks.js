@@ -1,4 +1,4 @@
-domHooks = {
+var domHooks = {
   sources: {
     document_location_hash: function() {
       var original_document_location_hash = document.location.hash;

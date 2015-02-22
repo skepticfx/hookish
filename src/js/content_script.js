@@ -1,9 +1,13 @@
 chrome.storage.local.get(null, function(db) {
   if (db.state == true && document.domain.search(db.domain) != -1) {
-    // good to inject
     console.log('Injecting Hookish! hooks.');
     var injectString = [];
     var domSettings = db.dom.settings;
+
+    // Load required libraries to inject
+    if(domSettings.xhr.enabled){
+      injectString.push(libsToInject.xhook);
+    }
 
     // Tracking variables
     injectString.push(domHooks.init);
@@ -17,6 +21,7 @@ chrome.storage.local.get(null, function(db) {
 
     if (domSettings.sinks.document_write)
       injectString.push(domHooks.sinks.document_write);
+
 
     // Generate the script to inject from the array of functions.
     var scriptToInject = "";
