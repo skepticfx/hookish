@@ -1,7 +1,6 @@
 // BootStrap
 // NOT_STARTED -> STARTED -> RUNNING -> CLOSED -> NOT_STARTED
 var devMode = false;
-console.log(chrome.runtime.getManifest())
 if(chrome.runtime.getManifest().update_url == null){
 	devMode = true;
 	window.onerror = function(err){
