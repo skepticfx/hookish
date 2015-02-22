@@ -1,4 +1,3 @@
-alert(domHooks);
 chrome.storage.local.get(null, function(db) {
   if (db.state == true && document.domain.search(db.domain) != -1) {
     // good to inject
