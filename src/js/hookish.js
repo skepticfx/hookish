@@ -69,7 +69,7 @@ $(function() {
     // Hook Eval
     $('#settings_domss_window_eval').bootstrapSwitch('state', db.dom.settings.sinks.window_eval);
     $('#settings_domss_window_eval').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.sinks.widnow_eval = state;
+      db.dom.settings.sinks.window_eval = state;
       chrome.storage.local.set(db);
     });
 

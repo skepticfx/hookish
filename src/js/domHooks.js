@@ -40,7 +40,8 @@ var domHooks = {
   xhook: function() {
     xhook.enable();
     xhook.after(function(req, res) {
-      //console.log(req, res);
+      console.log(req);
+      console.log(res);
       track.xhr.add({ // need to add more OBJECTs!!
         method: req.method,
         url: req.url,
