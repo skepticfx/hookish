@@ -12,16 +12,20 @@ chrome.storage.local.get(null, function(db) {
     // Tracking variables
     injectString.push(domHooks.init);
 
+    // Sources
     if (domSettings.sources.document_location_hash)
       injectString.push(domHooks.sources.document_location_hash);
 
-
+    // Sinks
     if (domSettings.sinks.window_eval)
       injectString.push(domHooks.sinks.window_eval);
-
     if (domSettings.sinks.document_write)
       injectString.push(domHooks.sinks.document_write);
 
+    // xhook
+    if (domSettings.xhr.enabled) {
+      injectString.push(domHooks.xhook);
+    }
 
     // Generate the script to inject from the array of functions.
     var scriptToInject = "";
@@ -43,9 +47,11 @@ chrome.storage.local.get(null, function(db) {
       if (event.source != window) return;
       if (event.data.type && (event.data.type == "FROM_HOOKISH")) {
         var incoming = event.data.obj;
-        if (db.settings.domss_empty_values == true && incoming.data.length == 0) return;
-        // insert only if filter matches the current domain
-        if (incoming.domain.search(db.domain) != -1) {
+        if (incoming.nature == 'xhr') {
+          db = trackXHR(incoming, db); // What a return value hack. My bad!
+        } else {
+          if (db.dom.settings.ignoreEmptyValues == true && incoming.data.length == 0) return;
+          // insert only if filter matches the current domain
           for (hook in hooks) {
             if (JSON.stringify(hooks[hook]) == JSON.stringify(incoming)) {
               console.log('Not Inserted');
@@ -56,12 +62,28 @@ chrome.storage.local.get(null, function(db) {
           chrome.storage.local.set({
             'stats': hooks
           });
+
         }
       }
     }, false)
 
   }
 });
+
+function trackXHR(hook, db) {
+  var xhrHooks = db.xhrHooks;
+  for (hook in xhrHooks) {
+    if (JSON.stringify(xhrHooks[hook]) == JSON.stringify(incoming)) {
+      console.log('XHR Hook Not Inserted');
+      return;
+    }
+  }
+  db.xhrHooks.push(hook);
+  chrome.storage.local.set({
+    xhrHooks: xhrHooks
+  });
+  return db;
+}
 
 
 function injectScript(scriptString) {

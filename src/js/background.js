@@ -14,19 +14,14 @@ var homeWindow = "";
 chrome.storage.local.get(null, function(db) {
   // The extension has been restarted.
   // Reset all
+
+
   chrome.storage.local.set({
-    stats: []
-  });
-  chrome.storage.local.set({
-    state: false
-  });
-  chrome.storage.local.set({
-    settings: {
-      'domss_empty_values': false
-    }
-  });
-  chrome.storage.local.set({
+    state: false,
+    xhrHooks: [],
+    stats: [],
     dom: {
+      //Settings
       settings: {
         sources: {
           document_location_hash: true
@@ -37,8 +32,10 @@ chrome.storage.local.get(null, function(db) {
         },
         xhr: {
           enabled: true
-        }
+        },
+        'ignoreEmptyValues': false
       }
+
     }
   });
 

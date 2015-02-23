@@ -11,6 +11,11 @@ var Utils = {
   addToDomssTable: function(stat) {
     // EwweH ! Soo ugly!!
     $('#domssTableBody').prepend('<tr><td><strong>' + stat.nature + '</strong></td><td>' + stat.type + '</td><td title="' + stat.data.replace(/"/gi, '%22') + '">' + this.stripped(stat.data, 50) + '</td><td>' + stat.href + '</td></tr>');
+  },
+
+  addToXhrTable: function(xhr) {
+    // EwweH ! Soo ugly!!
+    $('#xhrTableBody').prepend('<tr><td><strong>' + xhr.method + '</strong></td><td>' + xhr.url + '</td></tr>');
   }
 
 

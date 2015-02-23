@@ -910,10 +910,10 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family:  Open Sans, MundoSans, "Helvetica Neue", Arial, Helvetica, sans-serif;
   font-size: 15px;
   line-height: 1.42857143;
-  color: #2c3e50;
+  color: #000000;
   background-color: #ffffff;
 }
 input,
@@ -1009,7 +1009,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Open Sans, MundoSans, "Helvetica Neue", Arial, Helvetica, sans-serif;
   font-weight: 400;
   line-height: 1.1;
   color: inherit;

@@ -75,12 +75,12 @@
     <!-- Header -->
     <br/>
 
-    <!-- Portfolio Grid Section -->
-    <section id="portfolio">
+    <!-- List of everything that we detected. -->
+    <section id="domss">
         <div class="container">
         <div class="col-lg-12 text-center">
                     <h2>DOM Sources & Sinks</h2>
-                    <hr class="star-primary">
+                    <br/>
         </div>
         <table class="table table-striped" id="domssTable">
           <thead>
@@ -98,9 +98,54 @@
         </div>
     </section>
 
+    <section id="xhr">
+      <div class="container">
+      <div class="col-lg-12 text-center">
+        <h2>XHR Requests</h2>
+        <br/>
+      </div>
+      <table class="table table-striped" id="xhrTable">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>URL</th>
+          </tr>
+        </thead>
+        <tbody id="xhrTableBody">
+        
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+
+
+    <section id="userDefinedFunctions">
+        <div class="container">
+        <div class="col-lg-12 text-center">
+          <h2>User defined Functions</h2>
+          <br/>
+        </div>
+        <table class="table table-striped" id="userDefinedFunctionsTable">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Name</th>
+              <th>Value</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody id="userDefinedFunctionsTableBody">
+          
+          </tbody>
+        </table>
+        </div>
+    </section>
+
 
     <!-- Settings Grid Section -->
     <section id="settings">
+    <br/>
         <div class="container">
         <div class="row">
         <div class="col-lg-12 text-center">
@@ -111,8 +156,24 @@
         <div class="col-md-7 align-center">
         <div class="row">
             <div class="row-lg-12">
-                <p>Ignore Sources and Sinks with empty values <span><input type="checkbox" id="settings_domss_empty_values" data-size="mini" checked></span></p>
+                <p>Ignore Sources and Sinks with empty values <span><input type="checkbox" id="settings_domss_empty_values" data-size="mini"></span></p>
             </div>
+            <div class="row-lg-12">
+                <p>Hook location.hash <span><input type="checkbox" id="settings_domss_document_location_hash" data-size="mini" >
+                </span></p>
+            </div>
+            <div class="row-lg-12">
+                <p>Hook document.write <span><input type="checkbox" id="settings_domss_document_write" data-size="mini" >
+                </span></p>
+            </div>
+            <div class="row-lg-12">
+                <p>Hook Eval <span><input type="checkbox" id="settings_domss_window_eval" data-size="mini" >
+                </span></p>
+            </div>   
+            <div class="row-lg-12">
+                <p>Hook XHR Requests <span><input type="checkbox" id="settings_domss_xhr" data-size="mini" >
+                </span></p>
+            </div>                      
         </div>
         </div>
         </div>

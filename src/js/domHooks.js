@@ -37,6 +37,18 @@ var domHooks = {
     }
   },
 
+  xhook: function() {
+    xhook.enable();
+    xhook.after(function(req, res) {
+      //console.log(req, res);
+      track.xhr.add({ // need to add more OBJECTs!!
+        method: req.method,
+        url: req.url,
+        reqBody: req.body
+      });
+    })
+  },
+
   init: function() {
     var original_document_domain = document.domain;
     var track = {};
@@ -44,6 +56,7 @@ var domHooks = {
     track.href = document.location.href; // This cannot be hooked in browsers today.
     track.sources = [];
     track.sinks = [];
+    track.xhr = [];
 
     track.sources.add = function(obj) {
       track.sources.push(obj);
@@ -68,6 +81,17 @@ var domHooks = {
         'obj': obj
       }, "*");
     }
+
+    track.xhr.add = function(obj) {
+      track.xhr.push(obj);
+      console.log(obj.method + "  " + obj.url);
+      obj.nature = 'xhr';
+      window.postMessage({
+        type: "FROM_HOOKISH",
+        'obj': obj
+      }, "*");
+    }
+
   }
 
 }
