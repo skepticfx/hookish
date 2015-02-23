@@ -70,7 +70,7 @@ chrome.storage.local.get(null, function(db) {
   }
 });
 
-function trackXHR(hook, db) {
+function trackXHR(incoming, db) {
   var xhrHooks = db.xhrHooks;
   for (hook in xhrHooks) {
     if (JSON.stringify(xhrHooks[hook]) == JSON.stringify(incoming)) {
@@ -78,7 +78,7 @@ function trackXHR(hook, db) {
       return;
     }
   }
-  db.xhrHooks.push(hook);
+  db.xhrHooks.push(incoming);
   chrome.storage.local.set({
     xhrHooks: xhrHooks
   });
