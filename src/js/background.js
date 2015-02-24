@@ -28,7 +28,9 @@ chrome.storage.local.get(null, function(db) {
         },
         sinks: {
           window_eval: true,
-          document_write: true
+          document_write: true,
+          window_setTimeout: true,
+          window_setInterval: true
         },
         xhr: {
           enabled: true

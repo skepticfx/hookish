@@ -27,12 +27,32 @@ var domHooks = {
     },
     document_write: function() {
       var original_document_write = document.write;
-      document.write = function(x) {
+      document.write = function() {
         track.sinks.add(new Object({
           'type': 'document.write',
           'data': arguments[0]
         }));
         return original_document_write.apply(this, arguments);
+      }
+    },
+    window_setTimeout: function() {
+      var original_window_setTimeout = window.setTimeout;
+      window.setTimeout = function() {
+        track.sinks.add(new Object({
+          'type': 'setTimeout',
+          'data': arguments[0].toString()
+        }));
+        return original_window_setTimeout.apply(this, arguments)
+      }
+    },
+    window_setInterval: function() {
+      var original_window_setTimeout = window.setInterval;
+      window.setInterval = function() {
+        track.sinks.add(new Object({
+          'type': 'setInterval',
+          'data': arguments[0].toString()
+        }));
+        return original_window_setInterval.apply(this, arguments)
       }
     }
   },
@@ -73,7 +93,7 @@ var domHooks = {
 
     track.sinks.add = function(obj) {
       track.sinks.push(obj);
-      console.log(obj.type + " called with value " + obj.data.slice(0, 100));
+      console.log(obj.type + " called with value " + obj.data.toString().slice(0, 100));
       obj.nature = 'sink';
       obj.domain = track.domain;
       obj.href = track.href;

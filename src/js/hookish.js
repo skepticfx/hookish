@@ -1,6 +1,10 @@
 $(function() {
   // Update the version info
   $('#version-info').text("v" + chrome.runtime.getManifest().version)
+    // Setup toggle for all canToggle divs
+  $('.canToggle').click(function() {
+      $(this).parent().find('.toggleMe').toggle();
+    })
     // Bootstrap switch
   chrome.storage.local.get(null, function(db) {
     console.log(db)
@@ -18,7 +22,10 @@ $(function() {
               chrome.storage.local.set(db);
 
               $('#domain').html(domain);
-              // update table
+              setTimeout(function() {
+                  location.reload()
+                }, 200)
+                // update table
             } else {
               $('#status').bootstrapSwitch('state', false);
               $('#domain').html('');
@@ -77,6 +84,20 @@ $(function() {
     $('#settings_domss_document_write').bootstrapSwitch('state', db.dom.settings.sinks.document_write);
     $('#settings_domss_document_write').on('switchChange.bootstrapSwitch', function(event, state) {
       db.dom.settings.sinks.document_write = state;
+      chrome.storage.local.set(db);
+    });
+
+    // Hook window_setTimeout
+    $('#settings_domss_window_setTimeout').bootstrapSwitch('state', db.dom.settings.sinks.window_setTimeout);
+    $('#settings_domss_window_setTimeout').on('switchChange.bootstrapSwitch', function(event, state) {
+      db.dom.settings.sinks.window_setTimeout = state;
+      chrome.storage.local.set(db);
+    });
+
+    // Hook window_setInterval
+    $('#settings_domss_window_setInterval').bootstrapSwitch('state', db.dom.settings.sinks.window_setInterval);
+    $('#settings_domss_window_setInterval').on('switchChange.bootstrapSwitch', function(event, state) {
+      db.dom.settings.sinks.window_setInterval = state;
       chrome.storage.local.set(db);
     });
 

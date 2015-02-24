@@ -37,7 +37,6 @@
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
@@ -78,11 +77,11 @@
     <!-- List of everything that we detected. -->
     <section id="domss">
         <div class="container">
-        <div class="col-lg-12 text-center">
-                    <h2>DOM Sources & Sinks</h2>
+        <div class="col-lg-12 text-center canToggle">
+                    <h3>DOM Sources & Sinks</h3>
                     <br/>
         </div>
-        <table class="table table-striped" id="domssTable">
+        <table class="table table-striped toggleMe" id="domssTable">
           <thead>
             <tr>
               <th>Type</th>
@@ -100,11 +99,11 @@
 
     <section id="xhr">
       <div class="container">
-      <div class="col-lg-12 text-center">
-        <h2>XHR Requests</h2>
+      <div class="col-lg-12 text-center canToggle">
+        <h3>XHR Requests</h3>
         <br/>
       </div>
-      <table class="table table-striped" id="xhrTable">
+      <table class="table table-striped toggleMe" id="xhrTable">
         <thead>
           <tr>
             <th>Method</th>
@@ -122,11 +121,11 @@
 
     <section id="userDefinedFunctions">
         <div class="container">
-        <div class="col-lg-12 text-center">
-          <h2>User defined Functions</h2>
+        <div class="col-lg-12 text-center canToggle">
+          <h3>User defined Functions</h3>
           <br/>
         </div>
-        <table class="table table-striped" id="userDefinedFunctionsTable">
+        <table class="table table-striped toggleMe" id="userDefinedFunctionsTable">
           <thead>
             <tr>
               <th>Type</th>
@@ -145,15 +144,12 @@
 
     <!-- Settings Grid Section -->
     <section id="settings">
-    <br/>
         <div class="container">
-        <div class="row">
-        <div class="col-lg-12 text-center">
-            <h2>Settings</h2>
+          <div class="col-lg-12 text-center canToggle">
+            <h3>Settings</h3>
             <br/>
-        </div>
-        </div>
-        <div class="col-md-7 align-center">
+          </div>
+        <div class="col-md-7 align-center toggleMe">
         <div class="row">
             <div class="row-lg-12">
                 <p>Ignore Sources and Sinks with empty values <span><input type="checkbox" id="settings_domss_empty_values" data-size="mini"></span></p>
@@ -167,6 +163,14 @@
                 </span></p>
             </div>
             <div class="row-lg-12">
+                <p>Hook window.setTimeout <span><input type="checkbox" id="settings_domss_window_setTimeout" data-size="mini" >
+                </span></p>
+            </div>
+            <div class="row-lg-12">
+                <p>Hook window.setInterval <span><input type="checkbox" id="settings_domss_window_setInterval" data-size="mini" >
+                </span></p>
+            </div>
+            <div class="row-lg-12">
                 <p>Hook Eval <span><input type="checkbox" id="settings_domss_window_eval" data-size="mini" >
                 </span></p>
             </div>   
@@ -177,6 +181,7 @@
         </div>
         </div>
         </div>
+
     </section>
 
 

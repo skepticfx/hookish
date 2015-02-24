@@ -5,10 +5,10 @@
  */
 
 
-section.settings {
-  color: #fff;
-  background: #ff3e50;
+.canToggle{
+    cursor: pointer;
 }
+
 
 .fill-page{
   min-height: 100%;

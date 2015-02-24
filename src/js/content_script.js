@@ -21,6 +21,10 @@ chrome.storage.local.get(null, function(db) {
       injectString.push(domHooks.sinks.window_eval);
     if (domSettings.sinks.document_write)
       injectString.push(domHooks.sinks.document_write);
+    if (domSettings.sinks.window_setTimeout)
+      injectString.push(domHooks.sinks.window_setTimeout);
+    if (domSettings.sinks.window_setInterval)
+      injectString.push(domHooks.sinks.window_setInterval);
 
     // xhook
     if (domSettings.xhr.enabled) {

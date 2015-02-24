@@ -3,7 +3,7 @@ Hooks in to interesting functions and helps reverse the web app faster.
 
 ![alt tag](https://raw.githubusercontent.com/skepticfx/hookish/master/assets/github/hook128.png)
 
-Get it here form the Chrome Store <a href="https://chrome.google.com/webstore/detail/hookish/alndlomanifdcgjkdedlkpgobcefcapn?hl=en" target="_blank">![alt tag](https://raw.githubusercontent.com/skepticfx/hookish/master/assets/github/chromestore.png)</a>
+Get it from the Chrome Store <a href="https://chrome.google.com/webstore/detail/hookish/alndlomanifdcgjkdedlkpgobcefcapn?hl=en" target="_blank">![alt tag](https://raw.githubusercontent.com/skepticfx/hookish/master/assets/github/chromestore.png)</a>
 
 Tweet me [@skeptic_fx](https://twitter.com/skeptic_fx) to improve Hookish! if you feel that something makes sense.
 
