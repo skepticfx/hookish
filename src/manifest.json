@@ -3,7 +3,7 @@
    "description": "Hooks in to interesting functions and helps reverse the web app faster.",
    "manifest_version": 2,
    "short_name": "Hook Dom sources and sinks.",
-   "version": "0.3.41",
+   "version": "0.4.0",
    "permissions": [ "tabs", "<all_urls>", "storage" ],
    "background": {
       "persistent": false,

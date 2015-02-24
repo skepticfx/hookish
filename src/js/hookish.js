@@ -3,7 +3,7 @@ $(function() {
   $('#version-info').text("v" + chrome.runtime.getManifest().version)
     // Setup toggle for all canToggle divs
   $('.canToggle').click(function() {
-      $(this).parent().find('.toggleMe').toggle();
+      $(this).parent().find('.toggleMe').slideToggle();
     })
     // Bootstrap switch
   chrome.storage.local.get(null, function(db) {
