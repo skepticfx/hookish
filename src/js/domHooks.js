@@ -46,7 +46,7 @@ var domHooks = {
       }
     },
     window_setInterval: function() {
-      var original_window_setTimeout = window.setInterval;
+      var original_window_setInterval = window.setInterval;
       window.setInterval = function() {
         track.sinks.add(new Object({
           'type': 'setInterval',
@@ -70,6 +70,31 @@ var domHooks = {
     })
   },
 
+  unsafeAnchors: function() {
+    // https://hackerone.com/reports/23386
+    var hookUnsafeAnchors = function() {
+      console.log('Hooking into all Anchor tags to analyze them for unsafe usage of target="_blank"');
+      var anchors = document.getElementsByTagName('a');
+      // Convert HTMLCollection to Array
+      anchors = [].slice.call(anchors);
+      anchors.forEach(function(anchor) {
+        if ('target' in anchor && anchor.target == '_blank') {
+          var tmpNode = document.createElement("div");
+          tmpNode.appendChild(anchor);
+          track.unsafeAnchors.add({
+            href: anchor.href,
+            target: anchor.target,
+            hostname: anchor.hostname,
+            string: tmpNode.innerHTML.toString()
+          });
+          delete tmpNode;
+        }
+      })
+      console.log(anchors);
+    }
+    window.addEventListener("load", hookUnsafeAnchors, false);
+  },
+
   init: function() {
     var original_document_domain = document.domain;
     var track = {};
@@ -78,6 +103,7 @@ var domHooks = {
     track.sources = [];
     track.sinks = [];
     track.xhr = [];
+    track.unsafeAnchors = [];
 
     track.sources.add = function(obj) {
       track.sources.push(obj);
@@ -112,6 +138,16 @@ var domHooks = {
         'obj': obj
       }, "*");
     }
+
+    track.unsafeAnchors.add = function(obj) {
+      track.unsafeAnchors.push(obj);
+      obj.nature = 'unsafeAnchors';
+      window.postMessage({
+        type: "FROM_HOOKISH",
+        'obj': obj
+      }, "*");
+    }
+
 
   }
 

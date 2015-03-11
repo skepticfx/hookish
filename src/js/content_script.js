@@ -31,6 +31,11 @@ chrome.storage.local.get(null, function(db) {
       injectString.push(domHooks.xhook);
     }
 
+    // unsafeAnchors
+    if (domSettings.unsafeAnchors.enabled) {
+      injectString.push(domHooks.unsafeAnchors);
+    }
+
     // Generate the script to inject from the array of functions.
     var scriptToInject = "";
     injectString.forEach(function(func) {
@@ -51,26 +56,29 @@ chrome.storage.local.get(null, function(db) {
       if (event.source != window) return;
       if (event.data.type && (event.data.type == "FROM_HOOKISH")) {
         var incoming = event.data.obj;
-        if (incoming.nature == 'xhr') {
-          db = trackXHR(incoming, db); // What a return value hack. My bad!
-        } else {
-          if (db.dom.settings.ignoreEmptyValues == true && incoming.data.length == 0) return;
-          // insert only if filter matches the current domain
-          for (hook in hooks) {
-            if (JSON.stringify(hooks[hook]) == JSON.stringify(incoming)) {
-              console.log('Not Inserted');
-              return;
+        switch (incoming.nature) {
+          case 'xhr':
+            db = trackXHR(incoming, db); // What a return value hack. My bad!
+            break;
+          case 'unsafeAnchors':
+            db = trackUnsafeAnchors(incoming, db);
+            break;
+          default:
+            if (db.dom.settings.ignoreEmptyValues == true && incoming.data.length == 0) return;
+            // insert only if filter matches the current domain
+            for (hook in hooks) {
+              if (JSON.stringify(hooks[hook]) == JSON.stringify(incoming)) {
+                console.log('Not Inserted');
+                return;
+              }
             }
-          }
-          hooks.push(incoming);
-          chrome.storage.local.set({
-            'stats': hooks
-          });
-
+            hooks.push(incoming);
+            chrome.storage.local.set({
+              'stats': hooks
+            });
         }
       }
-    }, false)
-
+    }, false);
   }
 });
 
@@ -79,7 +87,7 @@ function trackXHR(incoming, db) {
   for (hook in xhrHooks) {
     if (JSON.stringify(xhrHooks[hook]) == JSON.stringify(incoming)) {
       console.log('XHR Hook Not Inserted');
-      return;
+      return db;
     }
   }
   db.xhrHooks.push(incoming);
@@ -88,6 +96,25 @@ function trackXHR(incoming, db) {
   });
   return db;
 }
+
+function trackUnsafeAnchors(incoming, db) {
+  // Only harness Cross domain hrefs, if the setting is enabled.
+  if (db.unsafeAnchors.xdomain && incoming.hostname.endsWith(document.domain))
+    return db;
+  var unsafeAnchors = db.unsafeAnchors;
+  for (anchor in unsafeAnchors) {
+    if (JSON.stringify(unsafeAnchors[anchor]) == JSON.stringify(incoming)) {
+      console.log('unsafeAnchors Not Inserted');
+      return db;
+    }
+  }
+  db.unsafeAnchors.push(incoming);
+  chrome.storage.local.set({
+    unsafeAnchors: unsafeAnchors
+  });
+  return db;
+}
+
 
 
 function injectScript(scriptString) {

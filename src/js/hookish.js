@@ -25,7 +25,7 @@ $(function() {
               setTimeout(function() {
                   location.reload()
                 }, 200)
-                // update table
+                // clear table
             } else {
               $('#status').bootstrapSwitch('state', false);
               $('#domain').html('');
@@ -61,6 +61,16 @@ $(function() {
     } else {
       xhrHooks.forEach(function(xhrHook) {
         Utils.addToXhrTable(xhrHook);
+      });
+    }
+
+    // UnSafe Anchors
+    var unsafeAnchors = db.unsafeAnchors;
+    if (unsafeAnchors.length < 1) {
+      $('#unsafeAnchorTableBody').append('<tr><td id="noUnsafeAnchors" colspan=4>No Unsafe anchor tags seen yet!</td></tr>');
+    } else {
+      unsafeAnchors.forEach(function(unsafeAnchor) {
+        Utils.addToUnsafeAnchorTable(unsafeAnchor);
       });
     }
 
@@ -115,6 +125,19 @@ $(function() {
       chrome.storage.local.set(db);
     });
 
+    // unsafeAnchors
+    $('#settings_domss_unsafe_anchors').bootstrapSwitch('state', db.dom.settings.unsafeAnchors.enabled);
+    $('#settings_domss_unsafe_anchors').on('switchChange.bootstrapSwitch', function(event, state) {
+      db.dom.settings.unsafeAnchors.enabled = state;
+      chrome.storage.local.set(db);
+    });
+
+    // xdomain unsafeAnchors
+    $('#settings_domss_unsafe_anchors_xdomain').bootstrapSwitch('state', db.dom.settings.unsafeAnchors.xdomain);
+    $('#settings_domss_unsafe_anchors_xdomain').on('switchChange.bootstrapSwitch', function(event, state) {
+      db.dom.settings.unsafeAnchors.xdomain = state;
+      chrome.storage.local.set(db);
+    });
 
   }); // end of db, chrome.storage
 
@@ -123,6 +146,7 @@ $(function() {
   chrome.storage.onChanged.addListener(function(changes) {
     var doItOnceForDomss = true;
     var doItOnceForXhr = true;
+    var doItOnceForUnsafeAnchors = true;
 
     // dom ss
     if (changes.stats != null) {
@@ -138,11 +162,22 @@ $(function() {
     if (changes.xhrHooks != null) {
       if (doItOnceForXhr) {
         $('#noXhrHooks').remove();
-        doItOnceForXhr = true;
+        doItOnceForXhr = false;
       }
       Utils.addToXhrTable(changes.xhrHooks.newValue[changes.xhrHooks.newValue.length - 1]);
 
     }
+
+    // unsafeAnchors
+    if (changes.unsafeAnchors != null) {
+      if (doItOnceForUnsafeAnchors) {
+        $('#noUnsafeAnchors').remove();
+        doItOnceForUnsafeAnchors = false;
+      }
+      Utils.addToUnsafeAnchorTable(changes.unsafeAnchors.newValue[changes.unsafeAnchors.newValue.length - 1]);
+
+    }
+
 
   })
 

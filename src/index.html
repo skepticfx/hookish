@@ -44,10 +44,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <div class="navbar-brand" href="#page-top"> 
+                <div class="navbar-brand" href="#page-top">
                     <span><img src="/img/hook32.png">Hookish! is <input type="checkbox" id="status" data-size="small" checked></span>
                     <span id="domain"></span>
-                </div> 
+                </div>
 
             </div>
 
@@ -91,7 +91,7 @@
             </tr>
           </thead>
           <tbody id="domssTableBody">
-          
+
           </tbody>
         </table>
         </div>
@@ -111,12 +111,32 @@
           </tr>
         </thead>
         <tbody id="xhrTableBody">
-        
+
         </tbody>
       </table>
       </div>
     </section>
 
+
+    <section id="unsafeAnchor">
+      <div class="container">
+      <div class="col-lg-12 text-center canToggle">
+        <h3>Unsafe anchor tags (target='_blank')</h3>
+        <br/>
+      </div>
+      <table class="table table-striped toggleMe" id="unsafeAnchorTable">
+        <thead>
+          <tr>
+            <th>Href</th>
+            <th>Anchor tag</th>
+          </tr>
+        </thead>
+        <tbody id="unsafeAnchorTableBody">
+
+        </tbody>
+      </table>
+      </div>
+    </section>
 
 
     <section id="userDefinedFunctions">
@@ -135,7 +155,7 @@
             </tr>
           </thead>
           <tbody id="userDefinedFunctionsTableBody">
-          
+
           </tbody>
         </table>
         </div>
@@ -173,11 +193,19 @@
             <div class="row-lg-12">
                 <p>Hook Eval <span><input type="checkbox" id="settings_domss_window_eval" data-size="mini" >
                 </span></p>
-            </div>   
+            </div>
             <div class="row-lg-12">
                 <p>Hook XHR Requests <span><input type="checkbox" id="settings_domss_xhr" data-size="mini" >
                 </span></p>
-            </div>                      
+            </div>
+            <div class="row-lg-12">
+                <p title="Anchor tags using target=_blank">Unsafe Anchor tags <span><input type="checkbox" id="settings_domss_unsafe_anchors" data-size="mini" >
+                </span></p>
+            </div>
+            <div class="row-lg-12">
+                <p title="Show Anchor tags only for Cross-Domain websites">Show only Cross Domain Anchor tags <span><input type="checkbox" id="settings_domss_unsafe_anchors_xdomain" data-size="mini" >
+                </span></p>
+            </div>
         </div>
         </div>
         </div>

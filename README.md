@@ -7,6 +7,10 @@ Get it from the Chrome Store <a href="https://chrome.google.com/webstore/detail/
 
 Tweet me [@skeptic_fx](https://twitter.com/skeptic_fx) to improve Hookish! if you feel that something makes sense.
 
+## Features:
+* Hook multiple DOM sources and sinks
+* Hook XHR requests and responses
+* Unsafe anchor tags (target=_blank)
 
 ## Things to come (Work in progress)
 
@@ -21,7 +25,7 @@ Tweet me [@skeptic_fx](https://twitter.com/skeptic_fx) to improve Hookish! if yo
 
 The MIT License
 
-Copyright (c) 2013-2015 Ahamed Nafeez <ahamed.nafeez@gmail.com>
+Copyright (c) Ahamed Nafeez <ahamed.nafeez@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

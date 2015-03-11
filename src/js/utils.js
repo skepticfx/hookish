@@ -10,13 +10,27 @@ var Utils = {
 
   addToDomssTable: function(stat) {
     // EwweH ! Soo ugly!!
-    $('#domssTableBody').prepend('<tr><td><strong>' + stat.nature + '</strong></td><td>' + stat.type + '</td><td title="' + stat.data.replace(/"/gi, '%22') + '">' + this.stripped(stat.data, 50) + '</td><td>' + stat.href + '</td></tr>');
+    $('#domssTableBody').prepend('<tr><td><strong>' + htmlEscape(stat.nature) + '</strong></td><td>' + htmlEscape(stat.type) + '</td><td title="' + htmlEscape(stat.data.replace(/"/gi, '%22')) + '">' + this.stripped(htmlEscape(stat.data), 50) + '</td><td>' + stat.href + '</td></tr>');
   },
 
   addToXhrTable: function(xhr) {
     // EwweH ! Soo ugly!!
-    $('#xhrTableBody').prepend('<tr><td><strong>' + xhr.method + '</strong></td><td>' + xhr.url + '</td></tr>');
+    $('#xhrTableBody').prepend('<tr><td>' + htmlEscape(xhr.method) + '</td><td>' + htmlEscape(xhr.url) + '</td></tr>');
+  },
+
+  addToUnsafeAnchorTable: function(links) {
+    $('#unsafeAnchorTableBody').prepend('<tr><td><strong>' + htmlEscape(links.href) + '</strong></td><td>' + htmlEscape(links.string) + '</td></tr>');
   }
 
 
+}
+
+
+function htmlEscape(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }

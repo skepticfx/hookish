@@ -9,5 +9,5 @@ all: clean $(SRC)
 	@zip -q -r Hookish-Chrome-$(MANIFEST_VERSION).zip $(SRC)
 	@echo 'The release file: Hookish-Chrome-'$(MANIFEST_VERSION)'.zip is ready to be uploaded to Chrome Store.'
 
-clean: 
+clean:
 	@rm -rf *.zip

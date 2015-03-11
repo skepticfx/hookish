@@ -20,6 +20,7 @@ chrome.storage.local.get(null, function(db) {
     state: false,
     xhrHooks: [],
     stats: [],
+    unsafeAnchors: [],
     dom: {
       //Settings
       settings: {
@@ -34,6 +35,10 @@ chrome.storage.local.get(null, function(db) {
         },
         xhr: {
           enabled: true
+        },
+        unsafeAnchors: {
+          enabled: true,
+          xdomain: true
         },
         'ignoreEmptyValues': false
       }

@@ -3,7 +3,7 @@
    "description": "Hooks in to interesting functions and helps reverse the web app faster.",
    "manifest_version": 2,
    "short_name": "Hook Dom sources and sinks.",
-   "version": "0.4.0",
+   "version": "0.4.1",
    "permissions": [ "tabs", "<all_urls>", "storage" ],
    "background": {
       "persistent": false,
@@ -22,10 +22,10 @@
         "128": "/icons/hook128.png"
     },
    "content_scripts": [ {
-      "js": [ 
+      "js": [
         "js/libsToInject.js",
         "js/domHooks.js",
-        "js/content_script.js" 
+        "js/content_script.js"
         ],
       "matches": [ "<all_urls>" ],
       "run_at": "document_start"
