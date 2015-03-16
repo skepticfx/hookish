@@ -17,7 +17,7 @@ Tweet me [@skeptic_fx](https://twitter.com/skeptic_fx) to improve Hookish! if yo
 * Identify source-sink flow controls using simple string comparison.
 * Hook XHR responses and correlate with DOM mutations.
 * Identify user defined functions in the Window object.
-* Indentify globally scoped variables which has a boolean value.
+* Identify globally scoped variables which has a boolean value.
 * Hook WebSocket responses.
 
 
