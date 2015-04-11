@@ -11,15 +11,15 @@ Tweet me [@skeptic_fx](https://twitter.com/skeptic_fx) to improve Hookish! if yo
 * Hook multiple DOM sources and sinks
 * Hook XHR requests and responses
 * Unsafe anchor tags (target=_blank)
+* Hook WebSocket responses.
+* Show function call trace.
 
 ## Things to come (Work in progress)
-
 * Identify source-sink flow controls using simple string comparison.
 * Hook XHR responses and correlate with DOM mutations.
 * Identify user defined functions in the Window object.
 * Identify globally scoped variables which has a boolean value.
-* Hook WebSocket responses.
-
+* Remove reporting common libraries like Google-Analytics, jQuery
 
 ## License
 
