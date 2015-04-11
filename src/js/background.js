@@ -1,20 +1,26 @@
 // BootStrap
 // NOT_STARTED -> STARTED -> RUNNING -> CLOSED -> NOT_STARTED
 var devMode = false;
+var globalState = false;
 if (chrome.runtime.getManifest().update_url == null) {
   devMode = true;
+  globalState = true;
   window.onerror = function(err) {
     alert("Some error occured: " + err);
   }
 
-  chrome.runtime.onInstalled.addListener(function(details){
-    if(details.reason == "install"){
+  chrome.runtime.onInstalled.addListener(function(details) {
+    if (details.reason == "install") {
       console.log("This is a first install!");
-      chrome.tabs.create({url: "index.html"});
-    }else if(details.reason == "update"){
+      chrome.tabs.create({
+        url: "index.html"
+      });
+    } else if (details.reason == "update") {
       var thisVersion = chrome.runtime.getManifest().version;
       console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
-      chrome.tabs.create({url: "index.html"});
+      chrome.tabs.create({
+        url: "index.html"
+      });
     }
   });
 
@@ -32,7 +38,7 @@ chrome.storage.local.get(null, function(db) {
 
 
   chrome.storage.local.set({
-    state: false,
+    state: globalState,
     xhrHooks: [],
     wsHooks: [],
     stats: [],

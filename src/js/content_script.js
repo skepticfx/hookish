@@ -76,9 +76,9 @@ chrome.storage.local.get(null, function(db) {
           case 'unsafeAnchors':
             db = trackUnsafeAnchors(incoming, db);
             break;
-          default:
+          default: // DOM sources and sinks
             if (db.dom.settings.ignoreEmptyValues == true && incoming.data.length == 0) return;
-            // insert only if filter matches the current domain
+            console.log(incoming);
             for (hook in hooks) {
               if (JSON.stringify(hooks[hook]) == JSON.stringify(incoming)) {
                 console.log('Not Inserted');
