@@ -10,7 +10,7 @@ var Utils = {
 
   addToDomssTable: function(stat) {
     // EwweH ! Soo ugly!!
-    $('#domssTableBody').prepend('<tr><td><strong>' + htmlEscape(stat.nature) + '</strong></td><td title="' + htmlEscape(stat.meta) + '">' + htmlEscape(stat.type) + '</td><td title="' + htmlEscape(stat.data) + '">' + this.stripped(htmlEscape(stat.data), 50) + '</td><td>' + stat.href + '</td></tr>');
+    $('#domssTableBody').prepend('<tr><td><strong>' + htmlEscape(stat.nature) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(stat.meta) + '">' + htmlEscape(stat.type) + '</td><td title="' + htmlEscape(stat.data) + '">' + this.stripped(htmlEscape(stat.data), 50) + '</td><td>' + stat.href + '</td></tr>');
   },
 
   addToXhrTable: function(xhr) {

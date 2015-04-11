@@ -44,6 +44,13 @@ $(function() {
     });
 
 
+    // Add stackTrace wherever applicable
+
+    $('tbody').on('click', '.callStack', function() {
+
+      console.log($(this).data('callstack'));
+    })
+
     // DOM Sources & Sinks
     var stats = db.stats;
     if (stats.length < 1) {

@@ -4,6 +4,9 @@ chrome.storage.local.get(null, function(db) {
     var injectString = [];
     var domSettings = db.dom.settings;
 
+    // The Function Call Tracer.
+    injectString.push(libsToInject.functionCallTracer);
+
     // Load required libraries to inject
     if (domSettings.xhr.enabled) {
       injectString.push(libsToInject.xhook);
@@ -78,7 +81,8 @@ chrome.storage.local.get(null, function(db) {
             break;
           default: // DOM sources and sinks
             if (db.dom.settings.ignoreEmptyValues == true && incoming.data.length == 0) return;
-            console.log(incoming);
+            if (incoming.meta === 'LIBRARY') return;
+            //console.log(incoming);
             for (hook in hooks) {
               if (JSON.stringify(hooks[hook]) == JSON.stringify(incoming)) {
                 console.log('Not Inserted');

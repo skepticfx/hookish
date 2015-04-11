@@ -5,6 +5,57 @@
  */
 
 
+.callStack{
+    cursor: pointer;
+    text-decoration: dotted;
+    color: #900;
+}
+
+td:hover {
+    color: red;
+    position: relative;
+}
+
+td[data-domValues]:hover:after {
+    width: min-width;
+    opacity: 0.88;
+    content: attr(data-domValues);
+    padding: 4px 8px;
+    color: #ff3e50;
+    position: absolute;
+    left: 0;
+    white-space: normal;
+    top: 100%;
+    z-index: 20;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0px 0px 4px #000;
+    box-shadow: 0px 0px 40px #000;
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+    background-image: -webkit-linear-gradient(top, #000 , black);
+}
+
+td[data-callstack]:hover:after {
+    width: auto;
+    opacity: 0.88;
+    content: attr(data-callstack);
+    padding: 4px 8px;
+    color: #ff3e50;
+    position: absolute;
+    left: 40%;
+    white-space: pre;
+    top: 100%;
+    z-index: 20;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0px 0px 4px #000;
+    box-shadow: 0px 0px 40px #000;
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+    background-image: -webkit-linear-gradient(top, #000 , black);
+}
+
 .canToggle{
     cursor: pointer;
 }
