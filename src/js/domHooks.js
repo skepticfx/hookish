@@ -70,6 +70,26 @@ var domHooks = {
     })
   },
 
+  wshook: function() {
+    wsHook.onMessage = function(event) {
+      console.log("ws recieved: " + event);
+      track.ws.add({
+        data: event.data,
+        url: event.url,
+        type: 'response' // onMessage from the server
+      });
+    }
+
+    wsHook.onSend = function(event) {
+      console.log("ws sent: " + event);
+      track.ws.add({
+        data: event.data,
+        url: event.url,
+        type: 'request' // onSend to the server
+      });
+    }
+  },
+
   unsafeAnchors: function() {
     // https://hackerone.com/reports/23386
     var hookUnsafeAnchors = function() {
@@ -103,6 +123,7 @@ var domHooks = {
     track.sources = [];
     track.sinks = [];
     track.xhr = [];
+    track.ws = [];
     track.unsafeAnchors = [];
 
     track.sources.add = function(obj) {
@@ -148,6 +169,15 @@ var domHooks = {
       }, "*");
     }
 
+    track.ws.add = function(obj) {
+      track.ws.push(obj);
+      console.log(obj.url + "  " + obj.data + " " + obj.type);
+      obj.nature = 'ws';
+      window.postMessage({
+        type: "FROM_HOOKISH",
+        'obj': obj
+      }, "*");
+    }
 
   }
 

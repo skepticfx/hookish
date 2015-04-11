@@ -8,6 +8,9 @@ chrome.storage.local.get(null, function(db) {
     if (domSettings.xhr.enabled) {
       injectString.push(libsToInject.xhook);
     }
+    if (domSettings.ws.enabled) {
+      injectString.push(libsToInject.wshook);
+    }
 
     // Tracking variables
     injectString.push(domHooks.init);
@@ -29,6 +32,11 @@ chrome.storage.local.get(null, function(db) {
     // xhook
     if (domSettings.xhr.enabled) {
       injectString.push(domHooks.xhook);
+    }
+
+    // wshook
+    if (domSettings.ws.enabled) {
+      injectString.push(domHooks.wshook);
     }
 
     // unsafeAnchors
@@ -59,6 +67,9 @@ chrome.storage.local.get(null, function(db) {
         switch (incoming.nature) {
           case 'xhr':
             db = trackXHR(incoming, db); // What a return value hack. My bad!
+            break;
+          case 'ws':
+            db = trackWS(incoming, db);
             break;
           case 'unsafeAnchors':
             db = trackUnsafeAnchors(incoming, db);
@@ -96,6 +107,23 @@ function trackXHR(incoming, db) {
   });
   return db;
 }
+
+
+function trackWS(incoming, db) {
+  var wsHooks = db.wsHooks;
+  for (hook in wsHooks) {
+    if (JSON.stringify(wsHooks[hook]) == JSON.stringify(incoming)) {
+      console.log('WS Hook Not Inserted');
+      return db;
+    }
+  }
+  db.wsHooks.push(incoming);
+  chrome.storage.local.set({
+    wsHooks: wsHooks
+  });
+  return db;
+}
+
 
 function trackUnsafeAnchors(incoming, db) {
   // Only harness Cross domain hrefs, if the setting is enabled.

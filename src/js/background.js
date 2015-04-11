@@ -19,6 +19,7 @@ chrome.storage.local.get(null, function(db) {
   chrome.storage.local.set({
     state: false,
     xhrHooks: [],
+    wsHooks: [],
     stats: [],
     unsafeAnchors: [],
     dom: {
@@ -34,6 +35,9 @@ chrome.storage.local.get(null, function(db) {
           window_setInterval: false
         },
         xhr: {
+          enabled: true
+        },
+        ws: {
           enabled: true
         },
         unsafeAnchors: {

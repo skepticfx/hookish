@@ -1,0 +1,18 @@
+.container {
+    border: 1px dashed #ccc;
+    position: relative;
+}
+
+.container > div {
+    background: #CCC;
+    height: 100px;
+    position: absolute;
+    width: 80px;
+}
+
+.container > div[data-ss-colspan='2'] { width: 170px; }
+
+.container .ss-placeholder-child {
+    background: transparent;
+    border: 1px dashed red;
+}
