@@ -18,6 +18,8 @@ chrome.storage.local.get(null, function(db) {
     // Sources
     if (domSettings.sources.document_location_hash)
       injectString.push(domHooks.sources.document_location_hash);
+    if (domSettings.sources.document_cookie)
+      injectString.push(domHooks.sources.document_cookie);
 
     // Sinks
     if (domSettings.sinks.window_eval)

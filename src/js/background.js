@@ -6,7 +6,22 @@ if (chrome.runtime.getManifest().update_url == null) {
   window.onerror = function(err) {
     alert("Some error occured: " + err);
   }
+
+  chrome.runtime.onInstalled.addListener(function(details){
+    if(details.reason == "install"){
+      console.log("This is a first install!");
+      chrome.tabs.create({url: "index.html"});
+    }else if(details.reason == "update"){
+      var thisVersion = chrome.runtime.getManifest().version;
+      console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+      chrome.tabs.create({url: "index.html"});
+    }
+  });
+
 }
+
+
+
 var HOME_STATE = 'CLOSED';
 var homeTab = "";
 var homeWindow = "";
@@ -26,7 +41,8 @@ chrome.storage.local.get(null, function(db) {
       //Settings
       settings: {
         sources: {
-          document_location_hash: true
+          document_location_hash: true,
+          document_cookie: true
         },
         sinks: {
           window_eval: true,
