@@ -36,6 +36,9 @@ $(function() {
       } else {
         db.state = false;
         db.stats = [];
+        db.wsHooks = [];
+        db.xhrHooks = [];
+        db.unsafeAnchors = [];
         chrome.storage.local.set(db);
         $('#domain').html('');
 

@@ -133,7 +133,7 @@ function trackWS(incoming, db) {
 
 function trackUnsafeAnchors(incoming, db) {
   // Only harness Cross domain hrefs, if the setting is enabled.
-  if (db.unsafeAnchors.xdomain && incoming.hostname.endsWith(document.domain))
+  if (db.dom.settings.unsafeAnchors.xdomain && incoming.hostname.endsWith(document.domain))
     return db;
   var unsafeAnchors = db.unsafeAnchors;
   for (anchor in unsafeAnchors) {
