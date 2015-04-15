@@ -1,0 +1,45 @@
+<html>
+<head>
+    <title>
+        DOM XSS Tests
+    </title>
+</head>
+<body>
+<h1> Testing DOM XSS</h1>
+<h2> Document.cookie to Eval</h2>
+
+To test this exploit, try setting a cookie named xss with some JS code.
+
+<script>
+
+    function getCookie(c_name)
+    {
+        var i,x,y,ARRcookies=document.cookie.split(";");
+
+        for (i=0;i<ARRcookies.length;i++)
+        {
+            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+            x=x.replace(/^\s+|\s+$/g,"");
+            if (x==c_name)
+            {
+                return unescape(y);
+            }
+        }
+    }
+
+
+    function doNasty(str){
+        try{
+            eval(str);
+        }
+        catch(e) {
+            console.warn(e);
+        }
+    }
+
+    doNasty(getCookie("xss"))
+
+</script>
+</body>
+</html>
