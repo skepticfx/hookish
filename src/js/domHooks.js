@@ -24,6 +24,8 @@ var domHooks = {
           }));
           return original_document_cookie;
         }
+        // TODO: FIXME - Define the setter for Cookies.
+        // https://github.com/skepticfx/hookish/issues/2
       });
     }
   },
@@ -117,8 +119,9 @@ var domHooks = {
       anchors = [].slice.call(anchors);
       anchors.forEach(function(anchor) {
         if ('target' in anchor && anchor.target == '_blank') {
+          var anchorCopy = anchor.cloneNode();
           var tmpNode = document.createElement("div");
-          tmpNode.appendChild(anchor);
+          tmpNode.appendChild(anchorCopy);
           track.unsafeAnchors.add({
             href: anchor.href,
             target: anchor.target,
