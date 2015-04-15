@@ -152,11 +152,12 @@ a.button span {
   padding-left: 50px;
 }
 
-#download-zip span {
-  background: transparent url(../images/zip-icon.png) 12px 50% no-repeat;
+
+#download-chrome span {
+    background: transparent url(../images/chrome-webstore.png) 12px 100% no-repeat;
 }
-#download-tar-gz span {
-  background: transparent url(../images/tar-gz-icon.png) 12px 50% no-repeat;
+#download-chrome span {
+    background: transparent url(../images/chrome-webstore.png) 12px 100% no-repeat;
 }
 #view-on-github span {
   background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;
