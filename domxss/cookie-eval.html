@@ -11,7 +11,8 @@
 To test this exploit, try setting a cookie named xss with some JS code.
 
 <script>
-
+    // http://stackoverflow.com/questions/5142337/read-a-javascript-cookie-by-name
+    // More relevant since people usually copy paste.
     function getCookie(c_name)
     {
         var i,x,y,ARRcookies=document.cookie.split(";");
