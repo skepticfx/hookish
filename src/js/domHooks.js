@@ -17,15 +17,15 @@ var domHooks = {
       var original_document_cookie = document.cookie;
       Object.defineProperty(document, "cookie", {
         get: function() {
-          track.sources.add(new Object({
-            'type': 'document.cookie',
-            'data': original_document_cookie,
-            'meta': functionCallTracer()
-          }));
-          return original_document_cookie;
-        }
-        // TODO: FIXME - Define the setter for Cookies.
-        // https://github.com/skepticfx/hookish/issues/2
+            track.sources.add(new Object({
+              'type': 'document.cookie',
+              'data': original_document_cookie,
+              'meta': functionCallTracer()
+            }));
+            return original_document_cookie;
+          }
+          // TODO: FIXME - Define the setter for Cookies.
+          // https://github.com/skepticfx/hookish/issues/2
       });
     }
   },

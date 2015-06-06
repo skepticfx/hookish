@@ -25,14 +25,11 @@ chrome.storage.local.get(null, function(db) {
       injectString.push(domHooks.sources.document_cookie);
 
     // Sinks
-    if (domSettings.sinks.window_eval)
-      injectString.push(domHooks.sinks.window_eval);
-    if (domSettings.sinks.document_write)
-      injectString.push(domHooks.sinks.document_write);
-    if (domSettings.sinks.window_setTimeout)
-      injectString.push(domHooks.sinks.window_setTimeout);
-    if (domSettings.sinks.window_setInterval)
-      injectString.push(domHooks.sinks.window_setInterval);
+    var sinks = ['window_eval', 'document_write', 'window_setTimeout', 'window_setInterval'];
+    sinks.forEach(function(sink){
+      if(domSettings.sinks[sink])
+        injectString.push(domHooks.sinks[sink]);
+    });
 
     // xhook
     if (domSettings.xhr.enabled) {
