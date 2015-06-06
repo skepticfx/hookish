@@ -74,6 +74,16 @@ $(function() {
       });
     }
 
+    // WS
+    var wsHooks = db.wsHooks;
+    if (wsHooks.length < 1) {
+      $('#wsTableBody').append('<tr><td id="noWsHooks" colspan=4>No WS Requests collected yet!</td></tr>');
+    } else {
+      wsHooks.forEach(function(wsHook) {
+        Utils.addToWsTable(wsHook);
+      });
+    }
+
     // UnSafe Anchors
     var unsafeAnchors = db.unsafeAnchors;
     if (unsafeAnchors.length < 1) {
@@ -157,6 +167,7 @@ $(function() {
     var doItOnceForDomss = true;
     var doItOnceForXhr = true;
     var doItOnceForUnsafeAnchors = true;
+    var doItOnceForWs = true;
 
     // dom ss
     if (changes.stats != null) {
@@ -175,6 +186,16 @@ $(function() {
         doItOnceForXhr = false;
       }
       Utils.addToXhrTable(changes.xhrHooks.newValue[changes.xhrHooks.newValue.length - 1]);
+
+    }
+
+    // WS
+    if (changes.wsHooks != null) {
+      if (doItOnceForWs) {
+        $('#noWsHooks').remove();
+        doItOnceForWs = false;
+      }
+      Utils.addToWsTable(changes.wsHooks.newValue[changes.wsHooks.newValue.length - 1]);
 
     }
 

@@ -13,6 +13,11 @@ var Utils = {
     $('#domssTableBody').prepend('<tr><td><strong>' + htmlEscape(stat.nature) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(stat.meta) + '">' + htmlEscape(stat.type) + '</td><td title="' + htmlEscape(stat.data) + '">' + this.stripped(htmlEscape(stat.data), 50) + '</td><td>' + stat.href + '</td></tr>');
   },
 
+  addToWsTable: function(ws) {
+    // EwweH ! Soo ugly!!
+    $('#wsTableBody').prepend('<tr><td>' + htmlEscape(ws.type) + '</td><td>' + htmlEscape(ws.data) + '</td></tr>');
+  },
+
   addToXhrTable: function(xhr) {
     // EwweH ! Soo ugly!!
     $('#xhrTableBody').prepend('<tr><td>' + htmlEscape(xhr.method) + '</td><td>' + htmlEscape(xhr.url) + '</td></tr>');
