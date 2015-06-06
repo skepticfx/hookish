@@ -12,11 +12,11 @@ chrome.storage.local.get(null, function(db) {
      *  3. Insert the required DomHooks depending upon the enabled values in 'settings.hooks'
      *  TODO: Need to check that a library is not inserted already.
      */
-    settingNames.forEach(function(settingName){
+    settingNames.forEach(function(settingName) {
       var hookSetting = hookSettings[settingName];
       // Insert the required libraries if any.
-      if(hookSetting.enabled && hookSetting.libToInject){
-          injectString.push(libsToInject[hookSetting.libToInject]);
+      if (hookSetting.enabled && hookSetting.libToInject) {
+        injectString.push(libsToInject[hookSetting.libToInject]);
       }
     });
 
@@ -26,9 +26,9 @@ chrome.storage.local.get(null, function(db) {
     // Tracking variables
     injectString.push(domHooks.init);
 
-    settingNames.forEach(function(settingName){
+    settingNames.forEach(function(settingName) {
       var hookSetting = hookSettings[settingName];
-      if(hookSetting.enabled){
+      if (hookSetting.enabled) {
         // Insert the respective Dom Hook.
         injectString.push(domHooks[settingName]);
       }
@@ -50,11 +50,11 @@ chrome.storage.local.get(null, function(db) {
 
     injectScript(scriptToInject);
 
-    window.addEventListener("message", function(event){
-      if(event.source !== window) return;
-      if(event.data.type && event.data.type === "FROM_HOOKISH") {
+    window.addEventListener("message", function(event) {
+      if (event.source !== window) return;
+      if (event.data.type && event.data.type === "FROM_HOOKISH") {
         var incoming = event.data.obj;
-        if(incoming.meta === "LIBRARY") return;
+        if (incoming.meta === "LIBRARY") return;
         var hookType = incoming.nature;
         var currentHooksinDB = db.hooks[hookType];
         for (hook in currentHooksinDB) {
@@ -140,5 +140,3 @@ function trackUnsafeAnchors(incoming, db) {
   return db;
 }
 */
-
-
