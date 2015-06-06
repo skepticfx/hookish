@@ -91,6 +91,30 @@ chrome.storage.local.get(null, function(db) {
         }
       },
       'ignoreEmptyValues': false
+    },
+
+    sections: {
+      sources: {
+        settingName: 'sources',
+        displayName: 'Sources',
+        tableHeadings: ['Name', 'Value', 'Location']
+      },
+      sinks: {
+        settingName: 'sinks',
+        displayName: 'Sinks',
+        tableHeadings: ['Name', 'Value', 'Location']
+      },
+      xhr: {
+        settingName: 'xhr',
+        displayName: 'XMLHttpRequests',
+        tableHeadings: ['Method', 'URL']
+      },
+      ws: {
+        settingName: 'ws',
+        displayName: 'WebSockets',
+        tableHeadings: ['Type', 'Data']
+      }
+
     }
 
   });

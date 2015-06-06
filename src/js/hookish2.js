@@ -7,7 +7,10 @@ $(function() {
     })
     // Bootstrap switch
   chrome.storage.local.get(null, function(db) {
-    console.log(db)
+    var hookishSectionsSettings = db.sections;
+    populateHookishSections('hookishSections', hookishSectionsSettings);
+
+    console.log(db);
     $('#status').bootstrapSwitch('state', db.state);
     if (db.state) $('#domain').html(db.domain);
     $('#status').on('switchChange.bootstrapSwitch', function(event, state) {

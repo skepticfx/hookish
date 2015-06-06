@@ -39,3 +39,48 @@ function htmlEscape(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
+
+
+function createHookishSection(setting) {
+  var displayName = setting.displayName;
+  var settingName = setting.settingName;
+  var tableHeadings = setting.tableHeadings;
+  var section = document.createElement('section');
+  section.id = 'section_' + settingName;
+  var div1 = document.createElement('div');
+  div1.className = 'container';
+  var div2 = document.createElement('div');
+  div2.className = 'col-lg-12- canToggle';
+  var h3 = document.createElement('h3');
+  h3.innerText = displayName;
+  div2.appendChild(h3);
+  div1.appendChild(div2);
+  var table = document.createElement('table');
+  table.className = 'table table-striped toggleMe';
+  table.id = 'section_table_' + settingName;
+  var thead = document.createElement('thead');
+  var tr = document.createElement('tr');
+  tableHeadings.forEach(function(th) {
+    var cell = document.createElement('th');
+    cell.innerText = th;
+    tr.appendChild(cell);
+  });
+  console.log(tr);
+  thead.appendChild(tr);
+  table.appendChild(thead);
+  var tableBody = document.createElement('table');
+  tableBody.id = 'section_table_body_' + settingName;
+  table.appendChild(tableBody);
+  div1.appendChild(table);
+  section.appendChild(div1);
+
+  return section;
+}
+
+function populateHookishSections(id, settings) {
+  var body = $('#' + id);
+  var settingNames = Object.keys(settings);
+  settingNames.forEach(function(settingName) {
+    body.append(createHookishSection(settings[settingName]));
+  });
+}

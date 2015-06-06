@@ -17,10 +17,10 @@
     <!-- Custom CSS -->
     <link href="css/freelancer.css" rel="stylesheet">
 
-    <!-- Custom Fonts  TODO: Move all to local files -->
-    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <!-- Custom Fonts -->
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="css/Montserrat.css" rel="stylesheet" type="text/css">
+    <link href="css/Lato.css" rel="stylesheet" type="text/css">
 
 
 </head>
@@ -67,113 +67,14 @@
 <!-- Header -->
 <br/>
 
+
+
+
 <!-- List of everything that we detected. -->
-<section id="domss">
-    <div class="container">
-        <div class="col-lg-12 text-center canToggle">
-            <h3>DOM Sources & Sinks</h3>
-            <br/>
-        </div>
-        <table class="table table-striped toggleMe" id="domssTable">
-            <thead>
-            <tr>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Value</th>
-                <th>Location</th>
-            </tr>
-            </thead>
-            <tbody id="domssTableBody">
+<!-- Dom Sources and Sinks -->
+<div id="hookishSections">
 
-            </tbody>
-        </table>
-    </div>
-</section>
-
-<section id="xhr">
-    <div class="container">
-        <div class="col-lg-12 text-center canToggle">
-            <h3>XHR Requests</h3>
-            <br/>
-        </div>
-        <table class="table table-striped toggleMe" id="xhrTable">
-            <thead>
-            <tr>
-                <th>Method</th>
-                <th>URL</th>
-            </tr>
-            </thead>
-            <tbody id="xhrTableBody">
-
-            </tbody>
-        </table>
-    </div>
-</section>
-
-<section id="ws">
-    <div class="container">
-        <div class="col-lg-12 text-center canToggle">
-            <h3>WebSocket Requests</h3>
-            <br/>
-        </div>
-        <table class="table table-striped toggleMe" id="wsTable">
-            <thead>
-            <tr>
-                <th>Type</th>
-                <th>Data</th>
-            </tr>
-            </thead>
-            <tbody id="wsTableBody">
-
-            </tbody>
-        </table>
-    </div>
-</section>
-
-
-<section id="unsafeAnchor">
-    <div class="container">
-        <div class="col-lg-12 text-center canToggle">
-            <h3>Unsafe anchor tags (target='_blank')</h3>
-            <br/>
-        </div>
-        <table class="table table-striped toggleMe" id="unsafeAnchorTable">
-            <thead>
-            <tr>
-                <th>Href</th>
-                <th>Anchor tag</th>
-            </tr>
-            </thead>
-            <tbody id="unsafeAnchorTableBody">
-
-            </tbody>
-        </table>
-    </div>
-</section>
-
-
-<section id="userDefinedFunctions">
-    <div class="container">
-        <div class="col-lg-12 text-center canToggle">
-            <h3>User defined Functions</h3>
-            <br/>
-        </div>
-        <table class="table table-striped toggleMe" id="userDefinedFunctionsTable">
-            <thead>
-            <tr>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Value</th>
-                <th>Location</th>
-            </tr>
-            </thead>
-            <tbody id="userDefinedFunctionsTableBody">
-
-            </tbody>
-        </table>
-    </div>
-</section>
-
+</div>
 
 <!-- Settings Grid Section -->
 <section id="settings">
