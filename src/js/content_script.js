@@ -2,52 +2,41 @@ chrome.storage.local.get(null, function(db) {
   if (db.state == true && document.domain.search(db.domain) != -1) {
     console.log('Injecting Hookish! hooks.');
     var injectString = [];
-    var domSettings = db.dom.settings;
+    var settings = db.settings;
+    var hookSettings = settings.hooks;
+    var settingNames = Object.keys(hookSettings);
+
+    /** Da real Hooking happens here
+     *  1. Load required libraries to inject from libsToinject.js
+     *  2. Hookish specific code like callTracer, homHook initialization etc.
+     *  3. Insert the required DomHooks depending upon the enabled values in 'settings.hooks'
+     *  TODO: Need to check that a library is not inserted already.
+     */
+    settingNames.forEach(function(settingName){
+      var hookSetting = hookSettings[settingName];
+      // Insert the required libraries if any.
+      if(hookSetting.enabled && hookSetting.libToInject){
+          injectString.push(libsToInject[hookSetting.libToInject]);
+      }
+    });
+
 
     // The Function Call Tracer.
     injectString.push(libsToInject.functionCallTracer);
-
-    // Load required libraries to inject
-    if (domSettings.xhr.enabled) {
-      injectString.push(libsToInject.xhook);
-    }
-    if (domSettings.ws.enabled) {
-      injectString.push(libsToInject.wshook);
-    }
-
     // Tracking variables
     injectString.push(domHooks.init);
 
-    // Sources
-    if (domSettings.sources.document_location_hash)
-      injectString.push(domHooks.sources.document_location_hash);
-    if (domSettings.sources.document_cookie)
-      injectString.push(domHooks.sources.document_cookie);
-
-    // Sinks
-    var sinks = ['window_eval', 'document_write', 'window_setTimeout', 'window_setInterval'];
-    sinks.forEach(function(sink){
-      if(domSettings.sinks[sink])
-        injectString.push(domHooks.sinks[sink]);
+    settingNames.forEach(function(settingName){
+      var hookSetting = hookSettings[settingName];
+      if(hookSetting.enabled){
+        // Insert the respective Dom Hook.
+        injectString.push(domHooks[settingName]);
+      }
     });
-
-    // xhook
-    if (domSettings.xhr.enabled) {
-      injectString.push(domHooks.xhook);
-    }
-
-    // wshook
-    if (domSettings.ws.enabled) {
-      injectString.push(domHooks.wshook);
-    }
-
-    // unsafeAnchors
-    if (domSettings.unsafeAnchors.enabled) {
-      injectString.push(domHooks.unsafeAnchors);
-    }
 
     // Generate the script to inject from the array of functions.
     var scriptToInject = "";
+
     injectString.forEach(function(func) {
       var func = func.toString().trim(); // get the function code
       func = func.replace(func.split('{', 1), ''); // remove the function(), part from the string.
@@ -60,41 +49,46 @@ chrome.storage.local.get(null, function(db) {
 
 
     injectScript(scriptToInject);
-    var hooks = db.stats;
 
-    window.addEventListener("message", function(event) {
-      if (event.source != window) return;
-      if (event.data.type && (event.data.type == "FROM_HOOKISH")) {
+    window.addEventListener("message", function(event){
+      if(event.source !== window) return;
+      if(event.data.type && event.data.type === "FROM_HOOKISH") {
         var incoming = event.data.obj;
-        switch (incoming.nature) {
-          case 'xhr':
-            db = trackXHR(incoming, db); // What a return value hack. My bad!
-            break;
-          case 'ws':
-            db = trackWS(incoming, db);
-            break;
-          case 'unsafeAnchors':
-            db = trackUnsafeAnchors(incoming, db);
-            break;
-          default: // DOM sources and sinks
-            if (db.dom.settings.ignoreEmptyValues == true && incoming.data.length == 0) return;
-            if (incoming.meta === 'LIBRARY') return;
-            //console.log(incoming);
-            for (hook in hooks) {
-              if (JSON.stringify(hooks[hook]) == JSON.stringify(incoming)) {
-                console.log('Not Inserted');
-                return;
-              }
-            }
-            hooks.push(incoming);
-            chrome.storage.local.set({
-              'stats': hooks
-            });
+        if(incoming.meta === "LIBRARY") return;
+        var hookType = incoming.nature;
+        var currentHooksinDB = db.hooks[hookType];
+        for (hook in currentHooksinDB) {
+
+          // Ignore if the incoming hook is already present in 'db.hooks'.
+          if (JSON.stringify(hook) == JSON.stringify(incoming)) {
+            console.warn("An incoming " + hookType + " hook is not inserted");
+            return;
+          }
+
+          db.hooks[hookType].push(incoming);
+          var hookDoc = {};
+          hookDoc['hooks.' + hookType] = db.hooks[hookType];
+          chrome.storage.local.set(hookDoc);
+
         }
       }
     }, false);
+
+
   }
 });
+
+
+function injectScript(scriptString) {
+  var actualCode = '(function(){' + scriptString + '})();'
+  var script = document.createElement('script');
+  script.textContent = actualCode;
+  (document.head || document.documentElement).appendChild(script);
+  script.parentNode.removeChild(script);
+}
+
+
+/*
 
 function trackXHR(incoming, db) {
   var xhrHooks = db.xhrHooks;
@@ -145,13 +139,6 @@ function trackUnsafeAnchors(incoming, db) {
   });
   return db;
 }
+*/
 
 
-
-function injectScript(scriptString) {
-  var actualCode = '(function(){' + scriptString + '})();'
-  var script = document.createElement('script');
-  script.textContent = actualCode;
-  (document.head || document.documentElement).appendChild(script);
-  script.parentNode.removeChild(script);
-}

@@ -19,7 +19,7 @@ if (chrome.runtime.getManifest().update_url == null) {
       var thisVersion = chrome.runtime.getManifest().version;
       console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
       chrome.tabs.create({
-        url: "index.html"
+        url: "index2.html"
       });
     }
   });
@@ -39,37 +39,60 @@ chrome.storage.local.get(null, function(db) {
 
   chrome.storage.local.set({
     state: globalState,
+    hooks: {
+      document_location_hash: [],
+      document_cookie: [],
+      window_eval: [],
+      document_write: [],
+      window_setTimeout: [],
+      window_setInterval: [],
+      xhr: [],
+      ws: [],
+      unsafeAnchors: []
+    },
+
     xhrHooks: [],
     wsHooks: [],
     stats: [],
     unsafeAnchors: [],
-    dom: {
-      //Settings
-      settings: {
-        sources: {
-          document_location_hash: true,
-          document_cookie: true
+
+    settings: {
+      // Everything that will be hooked
+      hooks: {
+        document_location_hash: {
+          enabled: true
         },
-        sinks: {
-          window_eval: true,
-          document_write: true,
-          window_setTimeout: false,
-          window_setInterval: false
+        document_cookie: {
+          enabled: true
+        },
+        window_eval: {
+          enabled: true
+        },
+        document_write: {
+          enabled: true
+        },
+        window_setTimeout: {
+          enabled: false
+        },
+        window_setInterval: {
+          enabled: false
         },
         xhr: {
-          enabled: true
+          enabled: true,
+          libToInject: "xhook"
         },
         ws: {
-          enabled: true
+          enabled: true,
+          libToInject: "wshook"
         },
         unsafeAnchors: {
           enabled: true,
           xdomain: true
-        },
-        'ignoreEmptyValues': false
-      }
-
+        }
+      },
+      'ignoreEmptyValues': false
     }
+
   });
 
   chrome.browserAction.setBadgeBackgroundColor({

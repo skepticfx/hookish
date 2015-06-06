@@ -1,83 +1,79 @@
 var domHooks = {
-  sources: {
-    document_location_hash: function() {
-      var original_document_location_hash = document.location.hash;
-      Object.defineProperty(document.location, "hash", {
-        get: function() {
+  document_location_hash: function() {
+    var original_document_location_hash = document.location.hash;
+    Object.defineProperty(document.location, "hash", {
+      get: function() {
+        track.sources.add(new Object({
+          'type': 'document.location.hash',
+          'data': original_document_location_hash,
+          'meta': functionCallTracer()
+        }));
+        return original_document_location_hash;
+      }
+    });
+  },
+  document_cookie: function() {
+    var original_document_cookie = document.cookie;
+    Object.defineProperty(document, "cookie", {
+      get: function() {
           track.sources.add(new Object({
-            'type': 'document.location.hash',
-            'data': original_document_location_hash,
+            'type': 'document.cookie',
+            'data': original_document_cookie,
             'meta': functionCallTracer()
           }));
-          return original_document_location_hash;
+          return original_document_cookie;
         }
-      });
-    },
-    document_cookie: function() {
-      var original_document_cookie = document.cookie;
-      Object.defineProperty(document, "cookie", {
-        get: function() {
-            track.sources.add(new Object({
-              'type': 'document.cookie',
-              'data': original_document_cookie,
-              'meta': functionCallTracer()
-            }));
-            return original_document_cookie;
-          }
-          // TODO: FIXME - Define the setter for Cookies.
-          // https://github.com/skepticfx/hookish/issues/2
-      });
+        // TODO: FIXME - Define the setter for Cookies.
+        // https://github.com/skepticfx/hookish/issues/2
+    });
+  },
+
+  window_eval: function() {
+    var original_window_eval = window.eval;
+    window.eval = function() {
+      track.sinks.add(new Object({
+        'type': 'eval',
+        'data': arguments[0],
+        'meta': functionCallTracer()
+      }));
+      return original_window_eval.apply(this, arguments);
+    }
+  },
+  document_write: function() {
+    var original_document_write = document.write;
+    document.write = function() {
+      track.sinks.add(new Object({
+        'type': 'document.write',
+        'data': arguments[0],
+        'meta': functionCallTracer()
+      }));
+      return original_document_write.apply(this, arguments);
+    }
+  },
+  window_setTimeout: function() {
+    var original_window_setTimeout = window.setTimeout;
+    window.setTimeout = function() {
+      track.sinks.add(new Object({
+        'type': 'setTimeout',
+        'data': arguments[0].toString(),
+        'meta': functionCallTracer()
+      }));
+      return original_window_setTimeout.apply(this, arguments)
+    }
+  },
+  window_setInterval: function() {
+    var original_window_setInterval = window.setInterval;
+    window.setInterval = function() {
+      track.sinks.add(new Object({
+        'type': 'setInterval',
+        'data': arguments[0].toString(),
+        'meta': functionCallTracer()
+      }));
+      return original_window_setInterval.apply(this, arguments)
     }
   },
 
-  sinks: {
-    window_eval: function() {
-      var original_window_eval = window.eval;
-      window.eval = function() {
-        track.sinks.add(new Object({
-          'type': 'eval',
-          'data': arguments[0],
-          'meta': functionCallTracer()
-        }));
-        return original_window_eval.apply(this, arguments);
-      }
-    },
-    document_write: function() {
-      var original_document_write = document.write;
-      document.write = function() {
-        track.sinks.add(new Object({
-          'type': 'document.write',
-          'data': arguments[0],
-          'meta': functionCallTracer()
-        }));
-        return original_document_write.apply(this, arguments);
-      }
-    },
-    window_setTimeout: function() {
-      var original_window_setTimeout = window.setTimeout;
-      window.setTimeout = function() {
-        track.sinks.add(new Object({
-          'type': 'setTimeout',
-          'data': arguments[0].toString(),
-          'meta': functionCallTracer()
-        }));
-        return original_window_setTimeout.apply(this, arguments)
-      }
-    },
-    window_setInterval: function() {
-      var original_window_setInterval = window.setInterval;
-      window.setInterval = function() {
-        track.sinks.add(new Object({
-          'type': 'setInterval',
-          'data': arguments[0].toString(),
-          'meta': functionCallTracer()
-        }));
-        return original_window_setInterval.apply(this, arguments)
-      }
-    }
-  },
-
-  xhook: function() {
+  xhr: function() {
     xhook.enable();
     xhook.after(function(req, res) {
       console.log(req);
@@ -90,7 +86,7 @@ var domHooks = {
     })
   },
 
-  wshook: function() {
+  ws: function() {
     wsHook.onMessage = function(event) {
       console.log("ws recieved: " + event);
       track.ws.add({
