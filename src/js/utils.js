@@ -1,7 +1,4 @@
-// Utils.js
-
-
-
+var backgroundPage = chrome.extension.getBackgroundPage();
 
 // These are very hook specific and its better to be here for now.
 var addToTableBody = {
@@ -100,6 +97,12 @@ function populateHookishSections(id, db) {
   settingNames.forEach(function(settingName) {
     body.append(createHookishSection(settings[settingName]));
   });
+
+  // Add stackTrace wherever applicable. An eventListener on all the table nodes we just setup.
+  $('tbody').on('click', '.callStack', function() {
+    console.log($(this).data('callstack'));
+  });
+
 }
 
 function createSettingsBody(setting) {
@@ -135,6 +138,63 @@ function populateSettingsBody(id, db) {
 }
 
 
+
+function setupStatus(db) {
+  var statusNode = $('#status');
+  statusNode.bootstrapSwitch('state', db.state);
+  if (db.state) $('#domain').html(db.domain);
+  statusNode.on('switchChange.bootstrapSwitch', function(event, state) {
+    if (state == true) {
+      bootbox.prompt({
+        title: 'Enter the domain you want to run Hookish! (Eg: github.com)',
+        value: db.domain,
+        callback: function(domain) {
+          if (domain != null && domain.length > 0) {
+            db.state = true;
+            db.domain = domain;
+            chrome.storage.local.set(db);
+
+            $('#domain').html(domain);
+            setTimeout(function() {
+              location.reload()
+            }, 200);
+            // clear table
+          } else {
+            $('#status').bootstrapSwitch('state', false);
+            $('#domain').html('');
+          }
+        }
+      });
+    } else {
+      chrome.storage.local.set({
+        state: false
+      });
+      chrome.storage.local.set({
+        hooks: backgroundPage.initializedDB.hooks
+      });
+      $('#domain').html('');
+
+      // need to update table,
+    }
+  });
+}
+
+
+function updateSectionTableBodyWithHooks(changes) {
+  if (changes.hooks !== null && changes.hooks !== undefined) {
+    var hooks = changes.hooks;
+    Object.keys(hooks.newValue).forEach(function(hookName) {
+      if (hooks.newValue[hookName].length !== hooks.oldValue[hookName].length) {
+        var hookObject = hooks.newValue[hookName][hooks.newValue[hookName].length - 1];
+        var hookSectionName = backgroundPage.initializedDB.settings.hooks[hookObject.name].section;
+        if (hooks.oldValue[hookName].length === 0) $('#empty_section_table_body_' + hookSectionName).hide();
+        addToTableBody[hookObject.name](hookObject, $("#section_table_body_" + hookSectionName));
+      }
+    })
+  }
+
+}
+
 // Grabs db.settings and compiles a simple array of objects with all setting types
 // For now hooks and preferences
 function getAllSettings(settings) {
@@ -150,6 +210,17 @@ function getAllSettings(settings) {
     })
   })
   return allSettings;
+}
+
+
+// Stuff which doesn't require the DB yet.
+function initPage() {
+  // Update the version info
+  $('#version-info').text("v" + chrome.runtime.getManifest().version);
+  // Setup toggle for all canToggle divs
+  $('.canToggle').click(function() {
+    $(this).parent().find('.toggleMe').slideToggle();
+  });
 }
 
 
