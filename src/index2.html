@@ -71,56 +71,21 @@
 
 
 <!-- List of everything that we detected. -->
-<!-- Dom Sources and Sinks -->
 <div id="hookishSections">
-
+    <!-- Dynamically populated from Hook settings -->
 </div>
 
 <!-- Settings Grid Section -->
-<section id="settings">
+<section id="section_settings">
     <div class="container">
         <div class="col-lg-12 text-center canToggle">
             <h3>Settings</h3>
             <br/>
         </div>
         <div class="col-md-7 align-center toggleMe">
-            <div class="row">
+            <div class="row" id="section_settings_body">
+                <!-- Dynamically populated from settings -->
 
-                <div class="row-lg-12">
-                    <p>Ignore Sources and Sinks with empty values <span><input type="checkbox" id="settings_" data-size="mini"></span></p>
-                </div>
-                <div class="row-lg-12">
-                    <p>Hook location.hash <span><input type="checkbox" id="settings_domss_document_location_hash" data-size="mini" >
-                </span></p>
-                </div>
-                <div class="row-lg-12">
-                    <p>Hook document.write <span><input type="checkbox" id="settings_domss_document_write" data-size="mini" >
-                </span></p>
-                </div>
-                <div class="row-lg-12">
-                    <p>Hook window.setTimeout <span><input type="checkbox" id="settings_domss_window_setTimeout" data-size="mini" >
-                </span></p>
-                </div>
-                <div class="row-lg-12">
-                    <p>Hook window.setInterval <span><input type="checkbox" id="settings_domss_window_setInterval" data-size="mini" >
-                </span></p>
-                </div>
-                <div class="row-lg-12">
-                    <p>Hook Eval <span><input type="checkbox" id="settings_domss_window_eval" data-size="mini" >
-                </span></p>
-                </div>
-                <div class="row-lg-12">
-                    <p>Hook XHR Requests <span><input type="checkbox" id="settings_domss_xhr" data-size="mini" >
-                </span></p>
-                </div>
-                <div class="row-lg-12">
-                    <p title="Anchor tags using target=_blank">Unsafe Anchor tags <span><input type="checkbox" id="settings_domss_unsafe_anchors" data-size="mini" >
-                </span></p>
-                </div>
-                <div class="row-lg-12">
-                    <p title="Show Anchor tags only for Cross-Domain websites">Show only Cross Domain Anchor tags <span><input type="checkbox" id="settings_domss_unsafe_anchors_xdomain" data-size="mini" >
-                </span></p>
-                </div>
             </div>
         </div>
     </div>

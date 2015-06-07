@@ -60,37 +60,60 @@ chrome.storage.local.get(null, function(db) {
       // Everything that will be hooked
       hooks: {
         document_location_hash: {
-          enabled: true
+          enabled: true,
+          description: 'Hook location.hash',
+          section: 'sources'
         },
         document_cookie: {
-          enabled: true
+          enabled: true,
+          description: 'Hook document.cookie',
+          section: 'sources'
         },
         window_eval: {
-          enabled: true
+          enabled: true,
+          description: 'Hook eval calls',
+          section: 'sinks'
         },
         document_write: {
-          enabled: true
+          enabled: true,
+          description: 'Hook document.write',
+          section: 'sinks'
         },
         window_setTimeout: {
-          enabled: false
+          enabled: false,
+          description: 'Hook setTimeout',
+          section: 'sinks'
         },
         window_setInterval: {
-          enabled: false
+          enabled: false,
+          description: 'Hook setInterval',
+          section: 'sinks'
         },
         xhr: {
           enabled: true,
-          libToInject: "xhook"
+          description: 'Hook XMLHttpRequests',
+          libToInject: "xhook",
+          section: 'xhr'
         },
         ws: {
           enabled: true,
-          libToInject: "wshook"
+          description: 'Hook WebSockets',
+          libToInject: "wshook",
+          section: 'ws'
         },
         unsafeAnchors: {
-          enabled: true,
-          xdomain: true
+          enabled: false,
+          description: 'Hook anchor tags',
+          xdomain: true,
+          section: 'unsafeAnchors'
         }
       },
-      'ignoreEmptyValues': false
+      preferences: {
+        ignoreEmptyValues: {
+          enabled: true,
+          description: 'Ignore Sources and Sinks with empty values'
+        }
+      }
     },
 
     sections: {

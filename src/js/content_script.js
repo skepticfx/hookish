@@ -55,22 +55,19 @@ chrome.storage.local.get(null, function(db) {
       if (event.data.type && event.data.type === "FROM_HOOKISH") {
         var incoming = event.data.obj;
         if (incoming.meta === "LIBRARY") return;
-        var hookType = incoming.nature;
-        var currentHooksinDB = db.hooks[hookType];
+        var hookName = incoming.name;
+        var currentHooksinDB = db.hooks[hookName];
         for (hook in currentHooksinDB) {
-
           // Ignore if the incoming hook is already present in 'db.hooks'.
           if (JSON.stringify(hook) == JSON.stringify(incoming)) {
-            console.warn("An incoming " + hookType + " hook is not inserted");
+            console.warn("An incoming " + hookName + " hook is not inserted");
             return;
           }
-
-          db.hooks[hookType].push(incoming);
-          var hookDoc = {};
-          hookDoc['hooks.' + hookType] = db.hooks[hookType];
-          chrome.storage.local.set(hookDoc);
-
         }
+        db.hooks[hookName].push(incoming);
+        chrome.storage.local.set({
+          hooks: db.hooks
+        });
       }
     }, false);
 

@@ -3,11 +3,11 @@ var domHooks = {
     var original_document_location_hash = document.location.hash;
     Object.defineProperty(document.location, "hash", {
       get: function() {
-        track.sources.add(new Object({
-          'type': 'document.location.hash',
+        track.customHook.add(new Object({
+          'type': 'source',
           'data': original_document_location_hash,
           'meta': functionCallTracer()
-        }));
+        }), 'document_location_hash');
         return original_document_location_hash;
       }
     });
@@ -16,11 +16,11 @@ var domHooks = {
     var original_document_cookie = document.cookie;
     Object.defineProperty(document, "cookie", {
       get: function() {
-          track.sources.add(new Object({
-            'type': 'document.cookie',
+          track.customHook.add(new Object({
+            'type': 'source',
             'data': original_document_cookie,
             'meta': functionCallTracer()
-          }));
+          }), 'document_cookie');
           return original_document_cookie;
         }
         // TODO: FIXME - Define the setter for Cookies.
@@ -31,44 +31,44 @@ var domHooks = {
   window_eval: function() {
     var original_window_eval = window.eval;
     window.eval = function() {
-      track.sinks.add(new Object({
-        'type': 'eval',
+      track.customHook.add(new Object({
+        'type': 'sink',
         'data': arguments[0],
         'meta': functionCallTracer()
-      }));
+      }), 'window_eval');
       return original_window_eval.apply(this, arguments);
     }
   },
   document_write: function() {
     var original_document_write = document.write;
     document.write = function() {
-      track.sinks.add(new Object({
-        'type': 'document.write',
+      track.customHook.add(new Object({
+        'type': 'sink',
         'data': arguments[0],
         'meta': functionCallTracer()
-      }));
+      }), 'document_write');
       return original_document_write.apply(this, arguments);
     }
   },
   window_setTimeout: function() {
     var original_window_setTimeout = window.setTimeout;
     window.setTimeout = function() {
-      track.sinks.add(new Object({
-        'type': 'setTimeout',
+      track.customHook.add(new Object({
+        'type': 'sink',
         'data': arguments[0].toString(),
         'meta': functionCallTracer()
-      }));
+      }), 'window_setTimeout');
       return original_window_setTimeout.apply(this, arguments)
     }
   },
   window_setInterval: function() {
     var original_window_setInterval = window.setInterval;
     window.setInterval = function() {
-      track.sinks.add(new Object({
-        'type': 'setInterval',
+      track.customHook.add(new Object({
+        'type': 'sink',
         'data': arguments[0].toString(),
         'meta': functionCallTracer()
-      }));
+      }), 'window_setInterval');
       return original_window_setInterval.apply(this, arguments)
     }
   },
@@ -137,16 +137,15 @@ var domHooks = {
     var track = {};
     track.domain = original_document_domain; // How funny, we could have used a hooked value.
     track.href = document.location.href; // This cannot be hooked in browsers today.
-    track.sources = [];
-    track.sinks = [];
+    track.customHook = [];
     track.xhr = [];
     track.ws = [];
     track.unsafeAnchors = [];
 
-    track.sources.add = function(obj) {
-      track.sources.push(obj);
+    track.customHook.add = function(obj, nature) {
+      track.customHook.push(obj);
       console.log(obj.type + " called with value " + obj.data.slice(0, 100));
-      obj.nature = 'source';
+      obj.name = nature;
       obj.domain = track.domain;
       obj.href = track.href;
       window.postMessage({
@@ -155,22 +154,11 @@ var domHooks = {
       }, "*");
     }
 
-    track.sinks.add = function(obj) {
-      track.sinks.push(obj);
-      console.log(obj.type + " called with value " + obj.data.toString().slice(0, 100));
-      obj.nature = 'sink';
-      obj.domain = track.domain;
-      obj.href = track.href;
-      window.postMessage({
-        type: "FROM_HOOKISH",
-        'obj': obj
-      }, "*");
-    }
 
     track.xhr.add = function(obj) {
       track.xhr.push(obj);
       console.log(obj.method + "  " + obj.url);
-      obj.nature = 'xhr';
+      obj.name = 'xhr';
       window.postMessage({
         type: "FROM_HOOKISH",
         'obj': obj
@@ -179,7 +167,7 @@ var domHooks = {
 
     track.unsafeAnchors.add = function(obj) {
       track.unsafeAnchors.push(obj);
-      obj.nature = 'unsafeAnchors';
+      obj.name = 'unsafeAnchors';
       window.postMessage({
         type: "FROM_HOOKISH",
         'obj': obj
@@ -189,7 +177,7 @@ var domHooks = {
     track.ws.add = function(obj) {
       track.ws.push(obj);
       console.log(obj.url + "  " + obj.data + " " + obj.type);
-      obj.nature = 'ws';
+      obj.name = 'ws';
       window.postMessage({
         type: "FROM_HOOKISH",
         'obj': obj

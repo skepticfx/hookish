@@ -7,8 +7,11 @@ $(function() {
     })
     // Bootstrap switch
   chrome.storage.local.get(null, function(db) {
-    var hookishSectionsSettings = db.sections;
-    populateHookishSections('hookishSections', hookishSectionsSettings);
+    populateHookishSections('hookishSections', db);
+    populateSettingsBody('section_settings_body', db);
+    populateSectionTableBodyWithHooks(db);
+
+
 
     console.log(db);
     $('#status').bootstrapSwitch('state', db.state);
@@ -97,73 +100,6 @@ $(function() {
       });
     }
 
-    // ALL SETTINGS HANDLERS GO HERE.
-
-
-
-
-    // Hook document.location.hash
-    $('#settings_domss_document_location_hash').bootstrapSwitch('state', db.dom.settings.sources.document_location_hash);
-    $('#settings_domss_document_location_hash').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.sources.document_location_hash = state;
-      chrome.storage.local.set(db);
-    });
-
-    // Hook Eval
-    $('#settings_domss_window_eval').bootstrapSwitch('state', db.dom.settings.sinks.window_eval);
-    $('#settings_domss_window_eval').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.sinks.window_eval = state;
-      chrome.storage.local.set(db);
-    });
-
-    // Hook document.write
-    $('#settings_domss_document_write').bootstrapSwitch('state', db.dom.settings.sinks.document_write);
-    $('#settings_domss_document_write').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.sinks.document_write = state;
-      chrome.storage.local.set(db);
-    });
-
-    // Hook window_setTimeout
-    $('#settings_domss_window_setTimeout').bootstrapSwitch('state', db.dom.settings.sinks.window_setTimeout);
-    $('#settings_domss_window_setTimeout').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.sinks.window_setTimeout = state;
-      chrome.storage.local.set(db);
-    });
-
-    // Hook window_setInterval
-    $('#settings_domss_window_setInterval').bootstrapSwitch('state', db.dom.settings.sinks.window_setInterval);
-    $('#settings_domss_window_setInterval').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.sinks.window_setInterval = state;
-      chrome.storage.local.set(db);
-    });
-
-    // domss_emtpy_values
-    $('#settings_domss_empty_values').bootstrapSwitch('state', db.dom.settings.ignoreEmptyValues);
-    $('#settings_domss_empty_values').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.ignoreEmptyValues = state;
-      chrome.storage.local.set(db);
-    });
-
-    // xhook
-    $('#settings_domss_xhr').bootstrapSwitch('state', db.dom.settings.xhr.enabled);
-    $('#settings_domss_xhr').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.xhr.enabled = state;
-      chrome.storage.local.set(db);
-    });
-
-    // unsafeAnchors
-    $('#settings_domss_unsafe_anchors').bootstrapSwitch('state', db.dom.settings.unsafeAnchors.enabled);
-    $('#settings_domss_unsafe_anchors').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.unsafeAnchors.enabled = state;
-      chrome.storage.local.set(db);
-    });
-
-    // xdomain unsafeAnchors
-    $('#settings_domss_unsafe_anchors_xdomain').bootstrapSwitch('state', db.dom.settings.unsafeAnchors.xdomain);
-    $('#settings_domss_unsafe_anchors_xdomain').on('switchChange.bootstrapSwitch', function(event, state) {
-      db.dom.settings.unsafeAnchors.xdomain = state;
-      chrome.storage.local.set(db);
-    });
 
   }); // end of db, chrome.storage
 
