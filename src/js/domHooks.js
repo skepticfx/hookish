@@ -17,7 +17,6 @@ var domHooks = {
       mutations.forEach(function(mutation) {
         if (mutation.type === 'characterData') { // Only observing textNode like changes for now.
           var mutatedTargetValue = mutation.target.nodeValue;
-          console.log(mutatedTargetValue);
           track.customHook.add(new Object({
             'type': 'sink',
             'data': mutatedTargetValue,
@@ -107,6 +106,18 @@ var domHooks = {
     xhook.after(function(req, res) {
       console.log(req);
       console.log(res);
+      // Lets tamper with the response
+      resBody = res.text.toString().trim();
+      if (resBody[0] === '{' && resBody[resBody.length - 1] === '}') {
+        resBody = JSON.parse(resBody);
+        Object.keys(resBody).forEach(function(key) {
+          // HO_XHR_7827371 is the tainting value. We search for this in the haystack.
+          resBody[key] = resBody[key] + "HO_XHR_7827371";
+        })
+        resBody = JSON.stringify(resBody);
+        res.text = resBody.toString();
+        console.log("Modified response: " + res.text)
+      }
       track.xhr.add({ // need to add more OBJECTs!!
         method: req.method,
         url: req.url,

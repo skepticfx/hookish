@@ -19,7 +19,8 @@ var initializedDB = {
       dom_text_node_mutation: {
         enabled: true,
         description: 'Enable mutation observer on all new text added to the DOM.',
-        section: 'sinks'
+        section: 'sinks',
+        do_not_list: true
       },
       document_location_hash: {
         enabled: true,

@@ -48,7 +48,7 @@ function populateSectionTableBodyWithHooks(db) {
     var hookSetting = db.settings.hooks[hookSettingName];
     var hooksList = db.hooks[hookSettingName];
     var hookSectionName = hookSetting.section;
-    if (hookSetting.enabled && hooksList.length > 0) {
+    if (hookSetting.do_not_list !== true && hookSetting.enabled && hooksList.length > 0) {
       $('#empty_section_table_body_' + hookSectionName).hide();
       hooksList.forEach(function(actualHookObject) {
         addToTableBody[actualHookObject.name](actualHookObject, $("#section_table_body_" + hookSectionName));
@@ -190,6 +190,7 @@ function updateSectionTableBodyWithHooks(changes) {
     Object.keys(hooks.newValue).forEach(function(hookName) {
       if (hooks.newValue[hookName].length !== hooks.oldValue[hookName].length) {
         var hookObject = hooks.newValue[hookName][hooks.newValue[hookName].length - 1];
+        if (backgroundPage.initializedDB.settings.hooks[hookObject.name].do_not_list === true) return;
         var hookSectionName = backgroundPage.initializedDB.settings.hooks[hookObject.name].section;
         if (hooks.oldValue[hookName].length === 0) $('#empty_section_table_body_' + hookSectionName).hide();
         addToTableBody[hookObject.name](hookObject, $("#section_table_body_" + hookSectionName));
