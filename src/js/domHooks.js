@@ -1,4 +1,33 @@
 var domHooks = {
+
+
+  dom_text_node_mutation: function() {
+    console.log('Enabling dom_text_node_mutation Mutation Observer. Things can become a little slow!');
+    var mutationConfig = {
+      characterData: true,
+      subtree: true
+    };
+    var domTextNodeObserver = new MutationObserver(handleMutation);
+    domTextNodeObserver.observe(document, mutationConfig);
+
+    function handleMutation(mutations) {
+      console.log("FROM !!! ! HOOKISH MUTATION OBSERVER");
+      console.warn(mutations);
+
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'characterData') { // Only observing textNode like changes for now.
+          var mutatedTargetValue = mutation.target.nodeValue;
+          console.log(mutatedTargetValue);
+          track.customHook.add(new Object({
+            'type': 'sink',
+            'data': mutatedTargetValue,
+            meta: ''
+          }), 'dom_text_node_mutation')
+        };
+      });
+    }
+  },
+
   document_location_hash: function() {
     var original_document_location_hash = document.location.hash;
     Object.defineProperty(document.location, "hash", {

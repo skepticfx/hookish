@@ -17,6 +17,10 @@ var addToTableBody = {
     node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + obj.href + '</td></tr>');
   },
 
+  dom_text_node_mutation: function(obj, node) {
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + obj.href + '</td></tr>');
+  },
+
   window_eval: function(obj, node) {
     node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + obj.href + '</td></tr>');
   },
