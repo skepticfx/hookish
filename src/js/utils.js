@@ -146,13 +146,14 @@ function populateSettingsBody(id, db) {
 function setupStatus(db) {
   var statusNode = $('#status');
   statusNode.bootstrapSwitch('state', db.state);
-  if (db.state) $('#domain').html(db.domain);
+  if (db.state) $('#domain').html(getHostname(db.domain));
   statusNode.on('switchChange.bootstrapSwitch', function(event, state) {
     if (state == true) {
       bootbox.prompt({
         title: 'Enter the domain you want to run Hookish! (Eg: github.com)',
-        value: db.domain,
+        value: getHostname(db.domain),
         callback: function(domain) {
+          domain = getHostname(domain);
           if (domain != null && domain.length > 0) {
             db.state = true;
             db.domain = domain;
@@ -252,4 +253,14 @@ function htmlEscape(str) {
     .replace(/'/g, '&#39;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+function getHostname(input){
+  if(input === null || input === undefined || input.length === 0)
+    return '';
+  input = input.toString().trim();
+  if(!input.startsWith('http://') && !input.startsWith('https://'))
+    input = 'http://'+input;
+  var url = new URL(input);
+  return url.hostname;
 }
