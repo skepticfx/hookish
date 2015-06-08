@@ -14,19 +14,19 @@ var addToTableBody = {
   },
 
   document_cookie: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href)  + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   dom_text_node_mutation: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href)  + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="No CallTracer for DOM Mutation events yet.">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   window_eval: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href)  + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   document_write: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href)  + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   ws: function(obj, node) {
@@ -48,7 +48,7 @@ function populateSectionTableBodyWithHooks(db) {
     var hookSetting = db.settings.hooks[hookSettingName];
     var hooksList = db.hooks[hookSettingName];
     var hookSectionName = hookSetting.section;
-    if (hookSetting.do_not_list !== true && hookSetting.enabled && hooksList.length > 0) {
+    if (db.settings.preferences[hookSetting.do_not_list_preference_key] !== true && hookSetting.enabled && hooksList.length > 0) {
       $('#empty_section_table_body_' + hookSectionName).hide();
       hooksList.forEach(function(actualHookObject) {
         addToTableBody[actualHookObject.name](actualHookObject, $("#section_table_body_" + hookSectionName));
@@ -183,13 +183,13 @@ function setupStatus(db) {
 }
 
 
-function updateSectionTableBodyWithHooks(changes) {
+function updateSectionTableBodyWithHooks(changes, db) {
   if (changes.hooks !== null && changes.hooks !== undefined) {
     var hooks = changes.hooks;
     Object.keys(hooks.newValue).forEach(function(hookName) {
       if (hooks.newValue[hookName].length !== hooks.oldValue[hookName].length) {
         var hookObject = hooks.newValue[hookName][hooks.newValue[hookName].length - 1];
-        if (backgroundPage.initializedDB.settings.hooks[hookObject.name].do_not_list === true) return;
+        if (db.settings.preferences[db.settings.hooks[hookObject.name].do_not_list_preference_key] === true) return;
         var hookSectionName = backgroundPage.initializedDB.settings.hooks[hookObject.name].section;
         if (hooks.oldValue[hookName].length === 0) $('#empty_section_table_body_' + hookSectionName).hide();
         addToTableBody[hookObject.name](hookObject, $("#section_table_body_" + hookSectionName));
@@ -236,7 +236,7 @@ function printDB() {
 }
 
 
-function initializeDB(){
+function initializeDB() {
   chrome.storage.local.set({
     state: false
   });
@@ -253,4 +253,3 @@ function htmlEscape(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
-

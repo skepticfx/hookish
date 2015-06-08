@@ -12,7 +12,7 @@ $(function() {
 
     // Listen to dynamic chrome.storage events
     chrome.storage.onChanged.addListener(function(changes) {
-      updateSectionTableBodyWithHooks(changes);
+      updateSectionTableBodyWithHooks(changes, db);
 
     }); // end of db chrome.storage.onChanged()
   }); // end of db-> chrome.storage.local.get()

@@ -20,7 +20,7 @@ var initializedDB = {
         enabled: true,
         description: 'Enable mutation observer on all new text added to the DOM.',
         section: 'sinks',
-        do_not_list: true
+        do_not_list_preference_key: 'doNotShowDomMutationEvents'
       },
       document_location_hash: {
         enabled: true,
@@ -75,6 +75,10 @@ var initializedDB = {
       ignoreEmptyValues: {
         enabled: true,
         description: 'Ignore Sources and Sinks with empty values'
+      },
+      doNotShowDomMutationEvents: {
+        enabled: true,
+        description: 'Ignore results from DOM Mutation events'
       }
     }
   },

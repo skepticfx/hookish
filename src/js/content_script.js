@@ -56,10 +56,13 @@ chrome.storage.local.get(null, function(db) {
         var incoming = event.data.obj;
         if (incoming.meta === "LIBRARY") return;
         var hookName = incoming.name;
-        if(db.settings.preferences.ignoreEmptyValues === true && incoming.data.length === 0)  return;
+        if (db.settings.preferences.ignoreEmptyValues.enabled === true && incoming.data && incoming.data.toString().trim().length === 0) {
+          console.log('Ignored storing an empty incoming data.');
+          return;
+        }
         var currentHooksInDb = db.hooks[hookName];
         var isDuplicate = false;
-        currentHooksInDb.forEach(function(currentHook){
+        currentHooksInDb.forEach(function(currentHook) {
           // Ignore if the incoming hook is already present in 'db.hooks'.
           if (isDuplicateHook(currentHook, incoming)) {
             console.warn("An incoming " + hookName + " hook is not inserted");
@@ -67,9 +70,11 @@ chrome.storage.local.get(null, function(db) {
             return;
           }
         });
-        if(!isDuplicate){
+        if (!isDuplicate) {
           db.hooks[hookName].push(incoming);
-          chrome.storage.local.set({hooks: db.hooks});
+          chrome.storage.local.set({
+            hooks: db.hooks
+          });
         }
       }
     }, false);
@@ -78,18 +83,20 @@ chrome.storage.local.get(null, function(db) {
   }
 });
 
-function isDuplicateHook(hook, incoming){
+function isDuplicateHook(hook, incoming) {
 
   // For sources and sinks types.
   // TODO: Add meta data comparison
-  if(incoming.type === 'source' || incoming.type === 'sink'){console.log(hook.data); console.log(incoming.data)
+  if (incoming.type === 'source' || incoming.type === 'sink') {
+    console.log(hook.data);
+    console.log(incoming.data)
     var hookData = hook.data.toString().trim();
     var incomingData = incoming.data.toString().trim();
-    if(hookData === incomingData)
+    if (hookData === incomingData)
       return true;
   }
 
-return false;
+  return false;
 }
 
 function injectScript(scriptString) {
