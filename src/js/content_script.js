@@ -56,18 +56,21 @@ chrome.storage.local.get(null, function(db) {
         var incoming = event.data.obj;
         if (incoming.meta === "LIBRARY") return;
         var hookName = incoming.name;
-        var currentHooksinDB = db.hooks[hookName];
-        for (hook in currentHooksinDB) {
+        if(db.settings.preferences.ignoreEmptyValues === true && incoming.data.length === 0)  return;
+        var currentHooksInDb = db.hooks[hookName];
+        var isDuplicate = false;
+        currentHooksInDb.forEach(function(currentHook){
           // Ignore if the incoming hook is already present in 'db.hooks'.
-          if (JSON.stringify(hook) == JSON.stringify(incoming)) {
+          if (isDuplicateHook(currentHook, incoming)) {
             console.warn("An incoming " + hookName + " hook is not inserted");
+            isDuplicate = true;
             return;
           }
-        }
-        db.hooks[hookName].push(incoming);
-        chrome.storage.local.set({
-          hooks: db.hooks
         });
+        if(!isDuplicate){
+          db.hooks[hookName].push(incoming);
+          chrome.storage.local.set({hooks: db.hooks});
+        }
       }
     }, false);
 
@@ -75,6 +78,19 @@ chrome.storage.local.get(null, function(db) {
   }
 });
 
+function isDuplicateHook(hook, incoming){
+
+  // For sources and sinks types.
+  // TODO: Add meta data comparison
+  if(incoming.type === 'source' || incoming.type === 'sink'){console.log(hook.data); console.log(incoming.data)
+    var hookData = hook.data.toString().trim();
+    var incomingData = incoming.data.toString().trim();
+    if(hookData === incomingData)
+      return true;
+  }
+
+return false;
+}
 
 function injectScript(scriptString) {
   var actualCode = '(function(){' + scriptString + '})();'

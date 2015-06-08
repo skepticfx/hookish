@@ -10,23 +10,23 @@ var addToTableBody = {
   },
 
   document_location_hash: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + obj.href + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   document_cookie: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + obj.href + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href)  + '</td></tr>');
   },
 
   dom_text_node_mutation: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + obj.href + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href)  + '</td></tr>');
   },
 
   window_eval: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + obj.href + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href)  + '</td></tr>');
   },
 
   document_write: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + obj.href + '</td></tr>');
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href)  + '</td></tr>');
   },
 
   ws: function(obj, node) {
@@ -157,6 +157,9 @@ function setupStatus(db) {
             db.state = true;
             db.domain = domain;
             chrome.storage.local.set(db);
+            chrome.storage.local.set({
+              hooks: backgroundPage.initializedDB.hooks
+            });
 
             $('#domain').html(domain);
             setTimeout(function() {
@@ -165,17 +168,13 @@ function setupStatus(db) {
             // clear table
           } else {
             $('#status').bootstrapSwitch('state', false);
+            initializeDB();
             $('#domain').html('');
           }
         }
       });
     } else {
-      chrome.storage.local.set({
-        state: false
-      });
-      chrome.storage.local.set({
-        hooks: backgroundPage.initializedDB.hooks
-      });
+      initializeDB();
       $('#domain').html('');
 
       // need to update table,
@@ -237,6 +236,14 @@ function printDB() {
 }
 
 
+function initializeDB(){
+  chrome.storage.local.set({
+    state: false
+  });
+  chrome.storage.local.set({
+    hooks: backgroundPage.initializedDB.hooks
+  });
+}
 
 function htmlEscape(str) {
   return String(str)
@@ -247,33 +254,3 @@ function htmlEscape(str) {
     .replace(/>/g, '&gt;');
 }
 
-
-var Utils = {
-
-  stripped: function(data, len) {
-    if (len <= 10) return data;
-    if (data.length <= len) return data;
-    return data.substr(0, len - 4) + " ...";
-  },
-
-  addToDomssTable: function(stat) {
-    // EwweH ! Soo ugly!!
-    $('#domssTableBody').prepend('<tr><td><strong>' + htmlEscape(stat.nature) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(stat.meta) + '">' + htmlEscape(stat.type) + '</td><td title="' + htmlEscape(stat.data) + '">' + this.stripped(htmlEscape(stat.data), 50) + '</td><td>' + stat.href + '</td></tr>');
-  },
-
-  addToWsTable: function(ws) {
-    // EwweH ! Soo ugly!!
-    $('#wsTableBody').prepend('<tr><td>' + htmlEscape(ws.type) + '</td><td>' + htmlEscape(ws.data) + '</td></tr>');
-  },
-
-  addToXhrTable: function(xhr) {
-    // EwweH ! Soo ugly!!
-    $('#xhrTableBody').prepend('<tr><td>' + htmlEscape(xhr.method) + '</td><td>' + htmlEscape(xhr.url) + '</td></tr>');
-  },
-
-  addToUnsafeAnchorTable: function(links) {
-    $('#unsafeAnchorTableBody').prepend('<tr><td><strong>' + htmlEscape(links.href) + '</strong></td><td>' + htmlEscape(links.string) + '</td></tr>');
-  }
-
-
-}

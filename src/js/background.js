@@ -6,7 +6,7 @@ var initDomain = '';
 if (chrome.runtime.getManifest().update_url == null) {
   devMode = true;
   globalState = true;
-  initDomain = 'google.com';
+  initDomain = 'damnvulnerable.me';
   window.onerror = function(err) {
     alert("Some error occured: " + err);
   }

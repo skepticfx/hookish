@@ -4,7 +4,7 @@ var libsToInject = {
   // XHook - v1.3.0 - https://github.com/jpillora/xhook
   // Jaime Pillora <dev@jpillora.com> - MIT Copyright 2014
   xhook: function() {
-    console.log('Using xhook. All XHRs are being monitored.');
+    console.log('Using xhook. All XHRs are being hooked.');
     (function(a, b) {
       var c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z = [].indexOf || function(a) {
         for (var b = 0, c = this.length; c > b; b++)
@@ -182,6 +182,7 @@ var libsToInject = {
   },
   // ***** End of Xhook. *****
   wshook: function() {
+    console.log('Using wshook. All WebSocket connections are being hooked.');
     // Need to write my own minimalistic implementation of EventEmitter in the Browser
     // using Wolfy87/EventEmitter for -> Emitting Events of course!
     /*!

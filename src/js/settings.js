@@ -83,12 +83,12 @@ var initializedDB = {
     sources: {
       settingName: 'sources',
       displayName: 'Sources',
-      tableHeadings: ['Name', 'Value', 'Location']
+      tableHeadings: ['Name', 'Type', 'Value', 'Location']
     },
     sinks: {
       settingName: 'sinks',
       displayName: 'Sinks',
-      tableHeadings: ['Name', 'Value', 'Location']
+      tableHeadings: ['Name', 'Type', 'Value', 'Location']
     },
     xhr: {
       settingName: 'xhr',
