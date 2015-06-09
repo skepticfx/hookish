@@ -21,13 +21,11 @@ var initializedDB = {
       dom_text_node_mutation: {
         enabled: true,
         description: 'Enable mutation observer on all new text added to the DOM.',
-        section: 'sinks',
         do_not_list_preference_key: 'doNotShowDomMutationEvents'
       },
       document_location_hash: {
         enabled: true,
-        description: 'Hook location.hash',
-        section: 'sources'
+        description: 'Hook location.hash'
       },
       document_referrer: {
         enabled: true,
@@ -36,51 +34,42 @@ var initializedDB = {
       },
       window_name: {
         enabled: true,
-        description: 'Hook window.name',
-        section: 'sources'
+        description: 'Hook window.name'
       },
       document_cookie: {
         enabled: true,
-        description: 'Hook document.cookie',
-        section: 'sources'
+        description: 'Hook document.cookie'
       },
       window_eval: {
         enabled: true,
-        description: 'Hook eval calls',
-        section: 'sinks'
+        description: 'Hook eval calls'
       },
       document_write: {
         enabled: true,
-        description: 'Hook document.write',
-        section: 'sinks'
+        description: 'Hook document.write'
       },
       window_setTimeout: {
         enabled: false,
-        description: 'Hook setTimeout',
-        section: 'sinks'
+        description: 'Hook setTimeout'
       },
       window_setInterval: {
         enabled: false,
-        description: 'Hook setInterval',
-        section: 'sinks'
+        description: 'Hook setInterval'
       },
       xhr: {
         enabled: true,
         description: 'Hook XMLHttpRequests',
-        libToInject: "xhook",
-        section: 'xhr'
+        libToInject: "xhook"
       },
       ws: {
         enabled: true,
         description: 'Hook WebSockets',
-        libToInject: "wshook",
-        section: 'ws'
+        libToInject: "wshook"
       },
       unsafeAnchors: {
         enabled: false,
         description: 'Hook anchor tags',
-        xdomain: true,
-        section: 'unsafeAnchors'
+        xdomain: true
       }
     },
     preferences: {

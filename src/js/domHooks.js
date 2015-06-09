@@ -20,7 +20,8 @@ var domHooks = {
           track.customHook.add(new Object({
             'type': 'sink',
             'data': mutatedTargetValue,
-            meta: ''
+             meta: '',
+            'section': 'sinks'
           }), 'dom_text_node_mutation')
         };
       });
@@ -34,6 +35,7 @@ var domHooks = {
         track.customHook.add(new Object({
           'type': 'source',
           'data': original_document_location_hash,
+          'section': 'sources',
           'meta': functionCallTracer()
         }), 'document_location_hash');
         return original_document_location_hash;
@@ -48,6 +50,7 @@ var domHooks = {
         track.customHook.add(new Object({
           'type': 'source',
           'data': original_document_referrer,
+          'section': 'sources',
           'meta': functionCallTracer()
         }), 'document_referrer');
         return original_document_referrer;
@@ -56,16 +59,28 @@ var domHooks = {
   },
 
   window_name: function() {
-    var original_window_name = window.name;
+    var current_window_name = window.name;
     Object.defineProperty(window, "name", {
       get: function() {
         track.customHook.add(new Object({
           'type': 'source',
-          'data': original_window_name,
+          'data': current_window_name,
+          'section': 'sources',
           'meta': functionCallTracer()
         }), 'window_name');
-        return original_window_name;
+        return current_window_name;
+      },
+
+      set: function(val) {
+        current_window_name = val;
+        track.customHook.add(new Object({
+          'type': 'sink',
+          'data': val,
+          'section': 'sinks',
+          'meta': functionCallTracer()
+        }), 'window_name');
       }
+
     });
   },
 
@@ -77,6 +92,7 @@ var domHooks = {
           track.customHook.add(new Object({
             'type': 'source',
             'data': original_document_cookie,
+            'section': 'sources',
             'meta': functionCallTracer()
           }), 'document_cookie');
           return original_document_cookie;
@@ -92,6 +108,7 @@ var domHooks = {
       track.customHook.add(new Object({
         'type': 'sink',
         'data': arguments[0],
+        'section': 'sinks',
         'meta': functionCallTracer()
       }), 'window_eval');
       return original_window_eval.apply(this, arguments);
@@ -103,6 +120,7 @@ var domHooks = {
       track.customHook.add(new Object({
         'type': 'sink',
         'data': arguments[0],
+        'section': 'sinks',
         'meta': functionCallTracer()
       }), 'document_write');
       return original_document_write.apply(this, arguments);
@@ -113,6 +131,7 @@ var domHooks = {
     window.setTimeout = function() {
       track.customHook.add(new Object({
         'type': 'sink',
+        'section': 'sinks',
         'data': arguments[0].toString(),
         'meta': functionCallTracer()
       }), 'window_setTimeout');
@@ -124,6 +143,7 @@ var domHooks = {
     window.setInterval = function() {
       track.customHook.add(new Object({
         'type': 'sink',
+        'section': 'sinks',
         'data': arguments[0].toString(),
         'meta': functionCallTracer()
       }), 'window_setInterval');
@@ -229,6 +249,7 @@ var domHooks = {
       track.xhr.push(obj);
       console.log(obj.method + "  " + obj.url);
       obj.name = 'xhr';
+      obj.section = 'xhr';
       window.postMessage({
         type: "FROM_HOOKISH",
         'obj': obj
@@ -248,6 +269,7 @@ var domHooks = {
       track.ws.push(obj);
       console.log(obj.url + "  " + obj.data + " " + obj.type);
       obj.name = 'ws';
+      obj.section = 'ws';
       window.postMessage({
         type: "FROM_HOOKISH",
         'obj': obj
