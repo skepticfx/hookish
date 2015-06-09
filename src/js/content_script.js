@@ -83,7 +83,7 @@ chrome.storage.local.get(null, function(db) {
 
 
   }
-})();
+});
 
 
 function isEmptyHook(db, incoming){

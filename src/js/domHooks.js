@@ -98,19 +98,29 @@ var domHooks = {
 
 
   document_cookie: function() {
-    var original_document_cookie = document.cookie;
+    var cookie_setter = document.__lookupSetter__ ('cookie');
+    var cookie_getter = document.__lookupGetter__ ('cookie');
     Object.defineProperty(document, "cookie", {
       get: function() {
+          var c = cookie_getter.apply(this, arguments);
           track.customHook.add(new Object({
             'type': 'source',
-            'data': original_document_cookie,
+            'data': c,
             'section': 'sources',
             'meta': functionCallTracer()
           }), 'document_cookie');
-          return original_document_cookie;
-        }
-        // TODO: FIXME - Define the setter for Cookies.
-        // https://github.com/skepticfx/hookish/issues/2
+          return c;
+        },
+      set: function(val) {
+        track.customHook.add(new Object({
+          'type': 'sink',
+          'data': val,
+          'section': 'sinks',
+          'meta': functionCallTracer()
+        }), 'document_cookie');
+        return cookie_getter.apply(this, arguments);
+      }
+
     });
   },
 
