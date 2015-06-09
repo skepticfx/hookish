@@ -29,16 +29,27 @@ var domHooks = {
   },
 
   document_location_hash: function() {
-    var original_document_location_hash = document.location.hash;
+    var current_document_location_hash = document.location.hash;
     Object.defineProperty(document.location, "hash", {
       get: function() {
         track.customHook.add(new Object({
           'type': 'source',
-          'data': original_document_location_hash,
+          'data': current_document_location_hash,
           'section': 'sources',
           'meta': functionCallTracer()
         }), 'document_location_hash');
-        return original_document_location_hash;
+        return current_document_location_hash;
+      },
+
+      set: function(val) {
+        val = val.toString();
+        current_document_location_hash = val;
+        track.customHook.add(new Object({
+          'type': 'sink',
+          'data': val,
+          'section': 'sinks',
+          'meta': functionCallTracer()
+        }), 'document_location_hash');
       }
     });
   },
@@ -72,6 +83,7 @@ var domHooks = {
       },
 
       set: function(val) {
+        val = val.toString();
         current_window_name = val;
         track.customHook.add(new Object({
           'type': 'sink',
