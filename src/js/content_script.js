@@ -56,16 +56,18 @@ chrome.storage.local.get(null, function(db) {
         var incoming = event.data.obj;
         if (incoming.meta === "LIBRARY") return;
         var hookName = incoming.name;
-        if (db.settings.preferences.ignoreEmptyValues.enabled === true && incoming.data && incoming.data.toString().trim().length === 0) {
+
+        if (isEmptyHook(db, incoming)) {
           console.log('Ignored storing an empty incoming data.');
           return;
         }
         var currentHooksInDb = db.hooks[hookName];
-        var isDuplicate = false;
+        var isDuplicate;
         currentHooksInDb.forEach(function(currentHook) {
+          isDuplicate = false;
           // Ignore if the incoming hook is already present in 'db.hooks'.
           if (isDuplicateHook(currentHook, incoming)) {
-            console.warn("An incoming " + hookName + " hook is not inserted");
+            console.warn("An incoming " + hookName + " hook is not inserted. Because it was empty.");
             isDuplicate = true;
             return;
           }
@@ -81,15 +83,18 @@ chrome.storage.local.get(null, function(db) {
 
 
   }
-});
+})();
+
+
+function isEmptyHook(db, incoming){
+  return (db.settings.preferences.ignoreEmptyValues.enabled === true && incoming.data !== undefined && incoming.data !== null && incoming.data.toString().trim().length === 0);
+}
 
 function isDuplicateHook(hook, incoming) {
 
   // For sources and sinks types.
   // TODO: Add meta data comparison
   if (incoming.type === 'source' || incoming.type === 'sink') {
-    console.log(hook.data);
-    console.log(incoming.data)
     var hookData = hook.data.toString().trim();
     var incomingData = incoming.data.toString().trim();
     if (hookData === incomingData)
@@ -107,56 +112,3 @@ function injectScript(scriptString) {
   script.parentNode.removeChild(script);
 }
 
-
-/*
-
-function trackXHR(incoming, db) {
-  var xhrHooks = db.xhrHooks;
-  for (hook in xhrHooks) {
-    if (JSON.stringify(xhrHooks[hook]) == JSON.stringify(incoming)) {
-      console.log('XHR Hook Not Inserted');
-      return db;
-    }
-  }
-  db.xhrHooks.push(incoming);
-  chrome.storage.local.set({
-    xhrHooks: xhrHooks
-  });
-  return db;
-}
-
-
-function trackWS(incoming, db) {
-  var wsHooks = db.wsHooks;
-  for (hook in wsHooks) {
-    if (JSON.stringify(wsHooks[hook]) == JSON.stringify(incoming)) {
-      console.log('WS Hook Not Inserted');
-      return db;
-    }
-  }
-  db.wsHooks.push(incoming);
-  chrome.storage.local.set({
-    wsHooks: wsHooks
-  });
-  return db;
-}
-
-
-function trackUnsafeAnchors(incoming, db) {
-  // Only harness Cross domain hrefs, if the setting is enabled.
-  if (db.dom.settings.unsafeAnchors.xdomain && incoming.hostname.endsWith(document.domain))
-    return db;
-  var unsafeAnchors = db.unsafeAnchors;
-  for (anchor in unsafeAnchors) {
-    if (JSON.stringify(unsafeAnchors[anchor]) == JSON.stringify(incoming)) {
-      console.log('unsafeAnchors Not Inserted');
-      return db;
-    }
-  }
-  db.unsafeAnchors.push(incoming);
-  chrome.storage.local.set({
-    unsafeAnchors: unsafeAnchors
-  });
-  return db;
-}
-*/
