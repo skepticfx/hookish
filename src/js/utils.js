@@ -13,6 +13,10 @@ var addToTableBody = {
     node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
+  document_referrer: function(obj, node) {
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+  },
+
   document_cookie: function(obj, node) {
     node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
@@ -48,7 +52,8 @@ function populateSectionTableBodyWithHooks(db) {
     var hookSetting = db.settings.hooks[hookSettingName];
     var hooksList = db.hooks[hookSettingName];
     var hookSectionName = hookSetting.section;
-    if (db.settings.preferences[hookSetting.do_not_list_preference_key] !== true && hookSetting.enabled && hooksList.length > 0) {
+
+    if ((hookSetting.do_not_list_preference_key === undefined || db.settings.preferences[hookSetting.do_not_list_preference_key].enabled !== true) && hookSetting.enabled && hooksList.length > 0) {
       $('#empty_section_table_body_' + hookSectionName).hide();
       hooksList.forEach(function(actualHookObject) {
         addToTableBody[actualHookObject.name](actualHookObject, $("#section_table_body_" + hookSectionName));

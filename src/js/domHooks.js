@@ -40,6 +40,21 @@ var domHooks = {
       }
     });
   },
+
+  document_referrer: function() {
+    var original_document_location_hash = document.referrer;
+    Object.defineProperty(document, "referrer", {
+      get: function() {
+        track.customHook.add(new Object({
+          'type': 'source',
+          'data': original_document_location_hash,
+          'meta': functionCallTracer()
+        }), 'document_referrer');
+        return original_document_referrer;
+      }
+    });
+  },
+
   document_cookie: function() {
     var original_document_cookie = document.cookie;
     Object.defineProperty(document, "cookie", {

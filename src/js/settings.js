@@ -4,6 +4,7 @@ var initializedDB = {
   hooks: {
     dom_text_node_mutation: [],
     document_location_hash: [],
+    document_referrer: [],
     document_cookie: [],
     window_eval: [],
     document_write: [],
@@ -25,6 +26,11 @@ var initializedDB = {
       document_location_hash: {
         enabled: true,
         description: 'Hook location.hash',
+        section: 'sources'
+      },
+      document_referrer: {
+        enabled: true,
+        description: 'Hook document.referrer',
         section: 'sources'
       },
       document_cookie: {
