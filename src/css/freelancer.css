@@ -5,9 +5,13 @@
  */
 
 #domain {
-    cursor: pointer;
-    text-decoration: none;
+    text-decoration: underline;
     text-align: center;
+    cursor:pointer;
+}
+
+tbody tr:hover td{
+    background-color: #48bba1;
 }
 
 #domain:hover{

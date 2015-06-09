@@ -56,7 +56,8 @@ chrome.storage.local.get(null, function(db) {
         var incoming = event.data.obj;
         if (incoming.meta === "LIBRARY") return;
         var hookName = incoming.name;
-
+        console.log(incoming.name);
+        console.log(incoming.data);
         if (isEmptyHook(db, incoming)) {
           console.log('Ignored storing an empty incoming data.');
           return;
@@ -67,7 +68,7 @@ chrome.storage.local.get(null, function(db) {
           isDuplicate = false;
           // Ignore if the incoming hook is already present in 'db.hooks'.
           if (isDuplicateHook(currentHook, incoming)) {
-            console.warn("An incoming " + hookName + " hook is not inserted. Because it was empty.");
+            console.warn("An incoming " + hookName + " hook was not inserted. Because it was a duplicate.");
             isDuplicate = true;
             return;
           }
@@ -97,7 +98,10 @@ function isDuplicateHook(hook, incoming) {
   if (incoming.type === 'source' || incoming.type === 'sink') {
     var hookData = hook.data.toString().trim();
     var incomingData = incoming.data.toString().trim();
-    if (hookData === incomingData)
+
+    var hookType = hook.type;
+    var incomingType = incoming.type;
+    if (hookData === incomingData && hookType === incomingType)
       return true;
   }
 

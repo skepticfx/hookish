@@ -29,28 +29,29 @@ var domHooks = {
   },
 
   document_location_hash: function() {
-    var current_document_location_hash = document.location.hash;
+    var hash_setter = document.location.__lookupSetter__ ('hash');
+    var hash_getter = document.location.__lookupGetter__ ('hash');
     Object.defineProperty(document.location, "hash", {
       get: function() {
+        var h = hash_getter.apply(this, arguments);
         track.customHook.add(new Object({
           'type': 'source',
-          'data': current_document_location_hash,
+          'data': h,
           'section': 'sources',
           'meta': functionCallTracer()
         }), 'document_location_hash');
-        return current_document_location_hash;
+        return h;
       },
-
       set: function(val) {
-        val = val.toString();
-        current_document_location_hash = val;
         track.customHook.add(new Object({
           'type': 'sink',
           'data': val,
           'section': 'sinks',
           'meta': functionCallTracer()
         }), 'document_location_hash');
+        return hash_getter.apply(this, arguments);
       }
+
     });
   },
 
@@ -68,11 +69,13 @@ var domHooks = {
       }
     });
   },
-
+  // window.name doesn't have the native __getter__
   window_name: function() {
-    var current_window_name = window.name;
+    var global = {};
+    global.current_window_name = window.name;
     Object.defineProperty(window, "name", {
       get: function() {
+        current_window_name = global.current_window_name;
         track.customHook.add(new Object({
           'type': 'source',
           'data': current_window_name,
@@ -84,7 +87,7 @@ var domHooks = {
 
       set: function(val) {
         val = val.toString();
-        current_window_name = val;
+        global.current_window_name = val;
         track.customHook.add(new Object({
           'type': 'sink',
           'data': val,
