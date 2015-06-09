@@ -4,6 +4,21 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+#domain {
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
+
+#domain:hover{
+    text-decoration: underline;
+    text-color-decoration: #217dbb;
+}
+
+
+.bootstrap-switch-id-status{
+    margin-left:10px;
+}
 
 .callStack{
     cursor: pointer;

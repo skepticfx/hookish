@@ -2,7 +2,7 @@ $(function() {
 
   initPage();
   chrome.storage.local.get(null, function(db) {
-    setupStatus(db);
+    setupPage(db);
     populateHookishSections('hookishSections', db);
     populateSettingsBody('section_settings_body', db);
     populateSectionTableBodyWithHooks(db);

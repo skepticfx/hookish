@@ -146,39 +146,48 @@ function populateSettingsBody(id, db) {
   });
 }
 
+function promptBootBox(db, preservePerviousConfig){
+  bootbox.prompt({
+    title: 'Enter the domain you want to run Hookish! (Eg: github.com)',
+    value: getHostname(db.domain),
+    callback: function(domain) {
+      domain = getHostname(domain);
+      if (domain != null && domain.length > 0) {
+        db.state = true;
+        db.domain = domain;
+        chrome.storage.local.set(db);
+        chrome.storage.local.set({
+          hooks: backgroundPage.initializedDB.hooks
+        });
 
+        $('#domain').html(domain);
+        setTimeout(function() {
+          location.reload()
+        }, 200);
+        // clear table
+      } else {
+        if(!preservePerviousConfig) {
+          $('#status').bootstrapSwitch('state', false);
+          initializeDB();
+          $('#domain').html('');
+        }
+      }
+    }
+  });
+}
 
-function setupStatus(db) {
+function setupPage(db) {
   var statusNode = $('#status');
+  var domainNode = $('#domain');
+  $(domainNode).click(function(){
+    promptBootBox(db, true);
+  });
   statusNode.bootstrapSwitch('state', db.state);
   if (db.state) $('#domain').html(getHostname(db.domain));
+
   statusNode.on('switchChange.bootstrapSwitch', function(event, state) {
     if (state == true) {
-      bootbox.prompt({
-        title: 'Enter the domain you want to run Hookish! (Eg: github.com)',
-        value: getHostname(db.domain),
-        callback: function(domain) {
-          domain = getHostname(domain);
-          if (domain != null && domain.length > 0) {
-            db.state = true;
-            db.domain = domain;
-            chrome.storage.local.set(db);
-            chrome.storage.local.set({
-              hooks: backgroundPage.initializedDB.hooks
-            });
-
-            $('#domain').html(domain);
-            setTimeout(function() {
-              location.reload()
-            }, 200);
-            // clear table
-          } else {
-            $('#status').bootstrapSwitch('state', false);
-            initializeDB();
-            $('#domain').html('');
-          }
-        }
-      });
+      promptBootBox(db, false);
     } else {
       initializeDB();
       $('#domain').html('');
