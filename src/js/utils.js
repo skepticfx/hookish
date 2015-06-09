@@ -13,6 +13,10 @@ var addToTableBody = {
     node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
+  window_name: function(obj, node) {
+    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+  },
+
   document_referrer: function(obj, node) {
     node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
@@ -204,7 +208,9 @@ function updateSectionTableBodyWithHooks(changes, db) {
     Object.keys(hooks.newValue).forEach(function(hookName) {
       if (hooks.newValue[hookName].length !== hooks.oldValue[hookName].length) {
         var hookObject = hooks.newValue[hookName][hooks.newValue[hookName].length - 1];
-        if (db.settings.preferences[db.settings.hooks[hookObject.name].do_not_list_preference_key] === true) return;
+        if(db.settings.hooks[hookObject.name].do_not_list_preference_key !== undefined &&
+          db.settings.preferences[db.settings.hooks[hookObject.name].do_not_list_preference_key].enabled == true)
+            return;
         var hookSectionName = backgroundPage.initializedDB.settings.hooks[hookObject.name].section;
         if (hooks.oldValue[hookName].length === 0) $('#empty_section_table_body_' + hookSectionName).hide();
         addToTableBody[hookObject.name](hookObject, $("#section_table_body_" + hookSectionName));

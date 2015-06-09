@@ -55,6 +55,21 @@ var domHooks = {
     });
   },
 
+  window_name: function() {
+    var original_window_name = window.name;
+    Object.defineProperty(window, "name", {
+      get: function() {
+        track.customHook.add(new Object({
+          'type': 'source',
+          'data': original_window_name,
+          'meta': functionCallTracer()
+        }), 'window_name');
+        return original_window_name;
+      }
+    });
+  },
+
+
   document_cookie: function() {
     var original_document_cookie = document.cookie;
     Object.defineProperty(document, "cookie", {

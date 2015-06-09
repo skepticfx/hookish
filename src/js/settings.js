@@ -6,6 +6,7 @@ var initializedDB = {
     document_location_hash: [],
     document_referrer: [],
     document_cookie: [],
+    window_name: [],
     window_eval: [],
     document_write: [],
     window_setTimeout: [],
@@ -31,6 +32,11 @@ var initializedDB = {
       document_referrer: {
         enabled: true,
         description: 'Hook document.referrer',
+        section: 'sources'
+      },
+      window_name: {
+        enabled: true,
+        description: 'Hook window.name',
         section: 'sources'
       },
       document_cookie: {
