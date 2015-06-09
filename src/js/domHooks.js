@@ -42,12 +42,12 @@ var domHooks = {
   },
 
   document_referrer: function() {
-    var original_document_location_hash = document.referrer;
+    var original_document_referrer = document.referrer;
     Object.defineProperty(document, "referrer", {
       get: function() {
         track.customHook.add(new Object({
           'type': 'source',
-          'data': original_document_location_hash,
+          'data': original_document_referrer,
           'meta': functionCallTracer()
         }), 'document_referrer');
         return original_document_referrer;
