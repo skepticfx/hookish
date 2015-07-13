@@ -1,0 +1,176 @@
+body > div._contextmenu_screen_ {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    display: none;
+    opacity: 1.0;
+    -webkit-transition: opacity 0.15s linear;
+    -moz-transition: opacity 0.15s linear;
+    -o-transition: opacity 0.15s linear;
+    overflow: hidden;
+	z-index: 120000;
+}
+body > cmenu {
+    display: none;
+}
+._contextmenu_screen_ cmenu.fadeout {
+    -webkit-transition: opacity 0.15s linear;
+    -moz-transition: opacity 0.15s linear;
+    -o-transition: opacity 0.15s linear;
+}
+._contextmenu_screen_ cmenu {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+._contextmenu_screen_ menuitem{
+    display: block;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+._contextmenu_screen_ > cmenu {
+    
+    position: fixed;
+    display: none;
+    cursor: default;
+    z-Index: 30000;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    list-style: none;
+}
+
+._contextmenu_screen_ menuitem:before{
+    content: attr(label);
+}
+
+._contextmenu_screen_ cmenu *{
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+._contextmenu_screen_ cmenu menuitem{
+    -webkit-user-drag: none;
+}
+
+.win7 ._contextmenu_screen_ cmenu {
+    background: #f0f0f0 url(repeat-y.png?) repeat-y;
+    font-family: 'Segoe UI';
+    font-size: 13px;
+    padding: 4px 2px 2px 2px;
+    /* text-rendering: optimizeLegibility; */
+    -webkit-font-smoothing: subpixel-antialiased;
+    border: 1px solid #a0a0a0;
+    -webkit-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+    color: black;
+}
+.win7 cmenu menuitem {
+    padding: 0px 5px 0px 32px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+}
+.win7 cmenu menuitem:hover{
+    border: 1px solid #b3d0f5;
+    background-color: rgba(172, 201,255, 0.05);
+}
+
+.win7 cmenu menuitem[open=true]{
+    border: 1px solid #b3d0f5;
+    background-color: rgba(172, 201,255, 0.05);
+}
+.win7 cmenu hr {
+    height: 0px;
+    border:none;
+    border-bottom: 1px solid white;
+    border-top: 1px solid #e0e0e0;
+    margin: 4px;
+    margin-left: 27px;
+}
+
+.win7 ._contextmenu_screen_ cmenu > .submenu:after{
+    content: " ";
+    display: block;
+    width: 4px;
+    height: 7px;
+    background: url(data:image/gif;base64,R0lGODlhBAAHAIABACgoKP///yH5BAEAAAEALAAAAAAEAAcAAAIIRA4WaeyrVCgAOw==) no-repeat;
+    float: right;
+    position: relative;
+    left: 0px;
+    top: 6px;
+}
+
+.osx10_7 ._contextmenu_screen_ > cmenu {
+    background-color:rgba(255,255,255, 0.9490196078);
+    
+    -moz-background-clip: padding;     /* Firefox 3.6 */
+	-webkit-background-clip: padding;  /* Safari 4? Chrome 6? */
+	background-clip: padding-box;      /* Firefox 4, Safari 5, Opera 10, IE 9 */
+	
+    color: black;
+    font-family: 'Lucida Grande';
+    border-top: 1px solid rgba(0,0,0, 0.0862745098);
+    border-left: 1px solid rgba(0,0,0, 0.231372549);
+    border-right: 1px solid rgba(0,0,0, 0.231372549);
+    border-bottom: 1px solid rgba(0,0,0, 0.4117647059);
+    border-radius: 5px;
+    padding: 4px 0;
+    -webkit-box-shadow: 0px 12px 10px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 12px 10px rgba(0,0,0,0.2);
+    -o-box-shadow: 0px 12px 10px rgba(0,0,0,0.2);
+    box-shadow: 0px 12px 10px rgba(0,0,0,0.2);
+    font-size: 14px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.osx10_7 ._contextmenu_screen_ > cmenu.submenu {
+    border-top-left-radius: 0px;
+}
+.osx10_7 ._contextmenu_screen_ cmenu > .submenu:after{
+    content: "\25B6";
+    float: right;
+    position: relative;
+    left: 14px;
+    top: 2px;
+    font-size: 12px;
+    color: #404040;
+}
+
+.osx10_7 ._contextmenu_screen_ cmenu > .submenu:hover:after{
+    color: white;
+}
+.osx10_7 ._contextmenu_screen_ cmenu > .submenu[open=true]:after{
+    color: white;
+}
+
+.osx10_7 ._contextmenu_screen_ cmenu menuitem{
+    height: 19px;
+    padding: 0px 19px 0px 21px;
+}
+.osx10_7 ._contextmenu_screen_ cmenu menuitem:hover{
+    background: #3c6ff7 url(repeat-x.png) repeat-x;
+    color: white;
+}
+.osx10_7 ._contextmenu_screen_ cmenu menuitem.submenu[open=true]{
+    background: #3c6ff7 url(repeat-x.png) repeat-x;
+    color: white;
+}
+.osx10_7 ._contextmenu_screen_ cmenu hr {
+    height:0px;
+    border: none;
+    /* results in background: #e3e3e3; */
+    border-bottom: 1px solid #e4e4e4;
+    margin: 5px 1px 6px 1px;
+}

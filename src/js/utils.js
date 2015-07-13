@@ -1,3 +1,14 @@
+// Polyfills
+
+// String.prototype.startsWith
+if (typeof String.prototype.startsWith != 'function') {
+  // see below for better implementation!
+  String.prototype.startsWith = function (str){
+    return this.indexOf(str) === 0;
+  };
+}
+
+
 var backgroundPage = chrome.extension.getBackgroundPage();
 
 // These are very hook specific and its better to be here for now.
@@ -10,39 +21,43 @@ var addToTableBody = {
   },
 
   document_location_hash: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+  },
+
+  dom_nodes: function(obj, node) {
+    node.prepend('<tr class="showRowOptions '+obj.hookishTagSettings.taintedClassName+'"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   window_name: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   document_referrer: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   document_cookie: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   dom_text_node_mutation: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="No CallTracer for DOM Mutation events yet.">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="No CallTracer for DOM Mutation events yet.">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   window_eval: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   document_write: function(obj, node) {
-    node.prepend('<tr><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   ws: function(obj, node) {
-    node.prepend('<tr><td>' + htmlEscape(obj.type) + '</td><td>' + htmlEscape(obj.data) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td>' + htmlEscape(obj.type) + '</td><td>' + htmlEscape(obj.data) + '</td></tr>');
   },
 
   xhr: function(obj, node) {
-    node.prepend('<tr><td>' + htmlEscape(obj.method) + '</td><td>' + htmlEscape(obj.url) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions"><td>' + htmlEscape(obj.method) + '</td><td>' + htmlEscape(obj.url) + '</td></tr>');
   }
 
 }
@@ -155,7 +170,7 @@ function promptBootBox(db, preservePerviousConfig){
   bootbox.prompt({
     title: 'Enter the domain you want to run Hookish! (Eg: github.com)',
     value: getHostname(db.domain),
-    callback: function(domain) {
+    callback: function(domain) {console.log(domain);
       domain = getHostname(domain);
       if (domain != null && domain.length > 0) {
         db.state = true;
@@ -187,8 +202,9 @@ function setupPage(db) {
   $(domainNode).click(function(){
     promptBootBox(db, true);
   });
+
   statusNode.bootstrapSwitch('state', db.state);
-  if (db.state) $('#domain').html(getHostname(db.domain));
+  if (db.state) {$('#domain').html(getHostname(db.domain));}
 
   statusNode.on('switchChange.bootstrapSwitch', function(event, state) {
     if (state == true) {
@@ -213,7 +229,9 @@ function updateSectionTableBodyWithHooks(changes, db) {
           db.settings.preferences[db.settings.hooks[hookObject.name].do_not_list_preference_key].enabled == true)
             return;
         var hookSectionName = hookObject.section;
-        if (hooks.oldValue[hookName].length === 0) $('#empty_section_table_body_' + hookSectionName).hide();
+        console.log('#empty_section_table_body_' + hookSectionName);
+        // Need to optimize to run only when table has no elements.
+        $('#empty_section_table_body_' + hookSectionName).hide();
         addToTableBody[hookObject.name](hookObject, $("#section_table_body_" + hookSectionName));
       }
     })
@@ -247,8 +265,44 @@ function initPage() {
   $('.canToggle').click(function() {
     $(this).parent().find('.toggleMe').slideToggle();
   });
+
+  setupContextMenu();
+
 }
 
+function setupContextMenu(){
+  var menu = contextmenu([
+    {
+      label: "First Item",
+      onclick: function (e){
+        document.body.style.background = "black";
+        setTimeout(function() {
+          document.body.style.background = "";
+        }, 500);
+      }
+    },
+    {label: "Second Item"},
+    {hr : true},
+    {
+      label: "Sub menu",
+      children: [
+        {
+          label: "Another Item"
+        }
+      ]
+    }
+  ]);
+
+
+// Right click the container
+  $(document).on("contextmenu", ".showRowOptions", function(e){
+    e.preventDefault();
+    console.log(e)
+    console.log(this)
+    contextmenu.show(menu, this.clientX, this.clientY);
+  })
+  //contextmenu.attach($(".showRowOptions"), menu);
+}
 
 // Real Utils.
 function printDB() {
@@ -276,12 +330,12 @@ function htmlEscape(str) {
     .replace(/>/g, '&gt;');
 }
 
-function getHostname(input){
+function getHostname(input){console.log(input)
   if(input === null || input === undefined || input.length === 0)
-    return '';
+    return 'localhost';
   input = input.toString().trim();
   if(!input.startsWith('http://') && !input.startsWith('https://'))
-    input = 'http://'+input;
+    input = 'https://'+input;
   var url = new URL(input);
   return url.hostname;
 }

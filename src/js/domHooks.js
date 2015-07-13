@@ -1,37 +1,127 @@
 var domHooks = {
 
+  init: function() {
 
-  dom_text_node_mutation: function() {
-    console.log('Enabling dom_text_node_mutation Mutation Observer. Things can become a little slow!');
-    var mutationConfig = {
-      characterData: true,
-      subtree: true
-    };
-    var domTextNodeObserver = new MutationObserver(handleMutation);
-    domTextNodeObserver.observe(document, mutationConfig);
+    var Taints = {};
+    var HOOKISH_TAG = "34758";
+    Taints.XHR_JSON_RESPONSE = HOOKISH_TAG + "_XHR_JSON_RES";
 
-    function handleMutation(mutations) {
-      console.log("FROM !!! ! HOOKISH MUTATION OBSERVER");
-      console.warn(mutations);
+    var original_document_domain = document.domain;
+    var track = {};
+    track.domain = original_document_domain; // Irony Detected!-
+    track.href = document.location.href; // This cannot be hooked in browsers today.
+    track.customHook = [];
+    track.xhr = [];
+    track.ws = [];
+    track.unsafeAnchors = [];
 
-      mutations.forEach(function(mutation) {
-        if (mutation.type === 'characterData') { // Only observing textNode like changes for now.
-          var mutatedTargetValue = mutation.target.nodeValue;
+    track.customHook.add = function(obj, nature) {
+      track.customHook.push(obj);
+      console.log(obj, nature)
+      console.log(obj.type + " called with value " + obj.data.slice(0, 100));
+      obj.name = nature.toString();
+      obj.domain = track.domain;
+      obj.href = track.href;
+      window.postMessage({
+        type: "FROM_HOOKISH",
+        'obj': obj
+      }, "*");
+    }
+
+
+    track.xhr.add = function(obj) {
+      track.xhr.push(obj);
+      console.log(obj.method + "  " + obj.url);
+      obj.name = 'xhr';
+      obj.section = 'xhr';
+      window.postMessage({
+        type: "FROM_HOOKISH",
+        'obj': obj
+      }, "*");
+    }
+
+    track.unsafeAnchors.add = function(obj) {
+      track.unsafeAnchors.push(obj);
+      obj.name = 'unsafeAnchors';
+      window.postMessage({
+        type: "FROM_HOOKISH",
+        'obj': obj
+      }, "*");
+    }
+
+    track.ws.add = function(obj) {
+      track.ws.push(obj);
+      console.log(obj.url + "  " + obj.data + " " + obj.type);
+      obj.name = 'ws';
+      obj.section = 'ws';
+      window.postMessage({
+        type: "FROM_HOOKISH",
+        'obj': obj
+      }, "*");
+    }
+
+    setHookishTagSettings = function(data){
+      var settings = {};
+      settings.tagged = false;
+      settings.taintedClassName = '';
+      // search the data for HOOKISH_TAGS from Taints.
+      for(taintTag in Taints){
+        if(data.includes(Taints[taintTag])){
+          settings.tagged = true;
+          settings.tagName = Taints[taintTag];
+        }
+      }
+    return settings;
+    }
+
+  },
+
+
+  /**
+   * Hooking Element.prototype.innerHTML
+   * This will take care of all Node.innerHTML.
+   */
+
+  dom_nodes: function(){
+    console.log("Hooking DOM Noodes");
+    var props = ['innerHTML', 'outerHTML'];
+
+    props.forEach(function(prop){
+      var setter = Element.prototype.__lookupSetter__(prop);
+      Object.defineProperty(Element.prototype, prop, {
+        set: function(){
+          var hookishTagSettings = setHookishTagSettings(arguments[0]);
+          if(hookishTagSettings.tagged === true){
+            // Remove our tags if the actual sinks if present.
+            hookishTagSettings.taintedClassName = 'taintedSink';
+            arguments[0] = arguments[0].replace(new RegExp(hookishTagSettings.tagName, "gi"), '');
+          }
           track.customHook.add(new Object({
             'type': 'sink',
-            'data': mutatedTargetValue,
-             meta: '',
-            'section': 'sinks'
-          }), 'dom_text_node_mutation')
-        };
+            'data': arguments[0],
+            'nodeName': this.nodeName,
+            'propertyName': prop,
+            'fullName': this.nodeName + '.' + prop,
+            'meta': functionCallTracer(),
+            'section': 'sinks',
+            'hookishTagSettings': hookishTagSettings
+          }), 'dom_nodes');
+          return setter.apply(this, arguments);
+        }
       });
-    }
+
+    });
   },
+
+  /**
+   * Chrome >43 has disabled accessor, mutator for document.location :(
+   * Need to wait and see. ES6 Proxy ?
+   */
 
   document_location_hash: function() {
     var hash_setter = document.location.__lookupSetter__ ('hash');
     var hash_getter = document.location.__lookupGetter__ ('hash');
-    Object.defineProperty(document.location, "hash", {
+    Object.defineProperty(location, "hash", {
       get: function() {
         var h = hash_getter.apply(this, arguments);
         track.customHook.add(new Object({
@@ -41,7 +131,9 @@ var domHooks = {
           'meta': functionCallTracer()
         }), 'document_location_hash');
         return h;
-      },
+      }
+      /*
+      ,
       set: function(val) {
         track.customHook.add(new Object({
           'type': 'sink',
@@ -50,7 +142,7 @@ var domHooks = {
           'meta': functionCallTracer()
         }), 'document_location_hash');
         return hash_getter.apply(this, arguments);
-      }
+      }*/
 
     });
   },
@@ -186,8 +278,8 @@ var domHooks = {
       if (resBody[0] === '{' && resBody[resBody.length - 1] === '}') {
         resBody = JSON.parse(resBody);
         Object.keys(resBody).forEach(function(key) {
-          // HO_XHR_7827371 is the tainting value. We search for this in the haystack.
-          resBody[key] = resBody[key] + "HO_XHR_7827371";
+           // Tainting all the values of a JSON XHR Response.
+          resBody[key] = resBody[key] + Taints.XHR_JSON_RESPONSE;
         })
         resBody = JSON.stringify(resBody);
         res.text = resBody.toString();
@@ -221,6 +313,33 @@ var domHooks = {
     }
   },
 
+  dom_text_node_mutation: function() {
+    console.log('Enabling dom_text_node_mutation Mutation Observer. Things can become a little slow!');
+    var mutationConfig = {
+      characterData: true,
+      subtree: true
+    };
+    var domTextNodeObserver = new MutationObserver(handleMutation);
+    domTextNodeObserver.observe(document, mutationConfig);
+
+    function handleMutation(mutations) {
+      console.log("FROM !!! ! HOOKISH MUTATION OBSERVER");
+      console.warn(mutations);
+
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'characterData') { // Only observing textNode like changes for now.
+          var mutatedTargetValue = mutation.target.nodeValue;
+          track.customHook.add(new Object({
+            'type': 'sink',
+            'data': mutatedTargetValue,
+            meta: '',
+            'section': 'sinks'
+          }), 'dom_text_node_mutation')
+        };
+      });
+    }
+  },
+
   unsafeAnchors: function() {
     // https://hackerone.com/reports/23386
     var hookUnsafeAnchors = function() {
@@ -245,62 +364,6 @@ var domHooks = {
       console.log(anchors);
     }
     window.addEventListener("load", hookUnsafeAnchors, false);
-  },
-
-  init: function() {
-    var original_document_domain = document.domain;
-    var track = {};
-    track.domain = original_document_domain; // How funny, we could have used a hooked value.
-    track.href = document.location.href; // This cannot be hooked in browsers today.
-    track.customHook = [];
-    track.xhr = [];
-    track.ws = [];
-    track.unsafeAnchors = [];
-
-    track.customHook.add = function(obj, nature) {
-      track.customHook.push(obj);
-      console.log(obj.type + " called with value " + obj.data.slice(0, 100));
-      obj.name = nature;
-      obj.domain = track.domain;
-      obj.href = track.href;
-      window.postMessage({
-        type: "FROM_HOOKISH",
-        'obj': obj
-      }, "*");
-    }
-
-
-    track.xhr.add = function(obj) {
-      track.xhr.push(obj);
-      console.log(obj.method + "  " + obj.url);
-      obj.name = 'xhr';
-      obj.section = 'xhr';
-      window.postMessage({
-        type: "FROM_HOOKISH",
-        'obj': obj
-      }, "*");
-    }
-
-    track.unsafeAnchors.add = function(obj) {
-      track.unsafeAnchors.push(obj);
-      obj.name = 'unsafeAnchors';
-      window.postMessage({
-        type: "FROM_HOOKISH",
-        'obj': obj
-      }, "*");
-    }
-
-    track.ws.add = function(obj) {
-      track.ws.push(obj);
-      console.log(obj.url + "  " + obj.data + " " + obj.type);
-      obj.name = 'ws';
-      obj.section = 'ws';
-      window.postMessage({
-        type: "FROM_HOOKISH",
-        'obj': obj
-      }, "*");
-    }
-
   }
 
 }

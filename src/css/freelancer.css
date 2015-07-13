@@ -4,6 +4,19 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+.taintedSink{
+    background-color: orange !important;
+    color: whitesmoke !important;
+    border-bottom: groove;
+
+}
+
+.taintedSink:hover{
+    background-color: orange !important;
+    color: whitesmoke !important;
+}
+
+
 #domain {
     text-decoration: underline;
     text-align: center;
@@ -11,7 +24,7 @@
 }
 
 tbody tr:hover td{
-    background-color: #48bba1;
+    background-color: #22bbba;
 }
 
 #domain:hover{

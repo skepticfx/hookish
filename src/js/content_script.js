@@ -56,8 +56,6 @@ chrome.storage.local.get(null, function(db) {
         var incoming = event.data.obj;
         if (incoming.meta === "LIBRARY") return;
         var hookName = incoming.name;
-        console.log(incoming.name);
-        console.log(incoming.data);
         if (isEmptyHook(db, incoming)) {
           console.log('Ignored storing an empty incoming data.');
           return;
@@ -101,6 +99,15 @@ function isDuplicateHook(hook, incoming) {
 
     var hookType = hook.type;
     var incomingType = incoming.type;
+
+    // Handling special cases for dom_nodes
+    if(hook.name === "dom_nodes" && incoming.name === "dom_nodes"){
+      if(hook.fullName === incoming.fullName && hookData === incomingData){
+        return true;
+      }
+      return false;
+    }
+
     if (hookData === incomingData && hookType === incomingType)
       return true;
   }

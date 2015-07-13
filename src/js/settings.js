@@ -2,6 +2,7 @@ var initializedDB = {
   state: false,
   domain: '',
   hooks: {
+    dom_nodes: [],
     dom_text_node_mutation: [],
     document_location_hash: [],
     document_referrer: [],
@@ -18,8 +19,13 @@ var initializedDB = {
   settings: {
     // Everything that will be hooked
     hooks: {
-      dom_text_node_mutation: {
+      dom_nodes: {
         enabled: true,
+        description: 'Hook all DOM properties (innerHTML etc)',
+        do_not_list_preference_key: 'doNotShowDomNodes'
+      },
+      dom_text_node_mutation: {
+        enabled: false,
         description: 'Enable mutation observer on all new text added to the DOM.',
         do_not_list_preference_key: 'doNotShowDomMutationEvents'
       },
@@ -80,6 +86,10 @@ var initializedDB = {
       doNotShowDomMutationEvents: {
         enabled: true,
         description: 'Ignore results from DOM Mutation events'
+      },
+      doNotShowDomNodes: {
+        enabled: false,
+        description: 'Ignore results from DOM Nodes'
       }
     }
   },

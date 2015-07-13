@@ -2,34 +2,36 @@
 // NOT_STARTED -> STARTED -> RUNNING -> CLOSED -> NOT_STARTED
 var devMode = false;
 var globalState = false;
-var initDomain = '';
+var initDomain = 'localhost';
+
 if (chrome.runtime.getManifest().update_url == null) {
   devMode = true;
   globalState = true;
-  initDomain = 'github.com';
+  initDomain = 'localhost';
   window.onerror = function(err) {
     alert("Some error occured: " + err);
   }
 
-  chrome.runtime.onInstalled.addListener(function(details) {
-    if (details.reason == "install") {
-      console.log("This is a first install!");
-      chrome.tabs.create({
-        url: "index.html"
-      });
-    } else if (details.reason == "update") {
-      var thisVersion = chrome.runtime.getManifest().version;
-      console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
-      chrome.tabs.create({
-        url: "index.html"
-      });
-    }
-  });
-
 }
+
+chrome.runtime.onInstalled.addListener(function(details) {
+  if (details.reason == "install") {
+    console.log("This is a first install!");
+    chrome.tabs.create({
+      url: "index.html"
+    });
+  } else if (details.reason == "update") {
+    var thisVersion = chrome.runtime.getManifest().version;
+    console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
+    chrome.tabs.create({
+      url: "index.html"
+    });
+  }
+});
 
 initializedDB.state = globalState;
 initializedDB.domain = initDomain;
+chrome.storage.local.set(initializedDB);
 
 var HOME_STATE = 'CLOSED';
 var homeTab = "";
@@ -37,8 +39,6 @@ var homeWindow = "";
 chrome.storage.local.get(null, function(db) {
   // The extension has been restarted.
   // Reset all
-
-  chrome.storage.local.set(initializedDB);
 
   chrome.browserAction.setBadgeBackgroundColor({
     color: '#45c89f'

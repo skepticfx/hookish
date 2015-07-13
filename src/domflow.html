@@ -1,23 +1,27 @@
 <html>
+<head>
+    <title>
+        DOMFlow
+    </title>
+
+<link href="css/domflow.css" rel="stylesheet" type="text/css">
 <script src="js/libs/jquery.js"></script>
 <script src="js/libs/jquery-ui.min.js"></script>
-<script src="js/libs/jquery.shapeshift.min.js"></script>
-<script src="js/new.js"></script>
-<link href="css/shapeshift.css" rel="stylesheet"></link>
+<script src="js/interact.min.js"></script>
+<script src="js/domflow.js"></script>
+</head>
 
+<body>
 
-<div class="container">
-    <div id="xss">XSS</div>
-    <div></div>
-    <div data-ss-colspan='2'></div>
-    <div></div>
+<div id="no-drop" class="draggable drag-drop"> #no-drop </div>
+
+<div id="yes-drop" class="draggable drag-drop"> #yes-drop </div>
+
+<div id="outer-dropzone" class="dropzone">
+    #outer-dropzone
+    <div id="inner-dropzone" class="dropzone">#inner-dropzone</div>
 </div>
 
-<div class="container">
-    <div></div>
-    <div data-ss-colspan='2'></div>
-    <div></div>
-    <div></div>
-</div>
+</body>
 
 </html>
