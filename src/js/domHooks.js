@@ -119,8 +119,8 @@ var domHooks = {
    */
 
   document_location_hash: function() {
-    var hash_setter = document.location.__lookupSetter__ ('hash');
-    var hash_getter = document.location.__lookupGetter__ ('hash');
+    var hash_setter = document.location.__lookupSetter__('hash');
+    var hash_getter = document.location.__lookupGetter__('hash');
     Object.defineProperty(location, "hash", {
       get: function() {
         var h = hash_getter.apply(this, arguments);
@@ -193,8 +193,8 @@ var domHooks = {
 
 
   document_cookie: function() {
-    var cookie_setter = document.__lookupSetter__ ('cookie');
-    var cookie_getter = document.__lookupGetter__ ('cookie');
+    var cookie_setter = document.__lookupSetter__('cookie');
+    var cookie_getter = document.__lookupGetter__('cookie');
     Object.defineProperty(document, "cookie", {
       get: function() {
           var c = cookie_getter.apply(this, arguments);

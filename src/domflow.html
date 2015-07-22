@@ -1,27 +1,43 @@
-<html>
-<head>
-    <title>
-        DOMFlow
-    </title>
-
-<link href="css/domflow.css" rel="stylesheet" type="text/css">
-<script src="js/libs/jquery.js"></script>
-<script src="js/libs/jquery-ui.min.js"></script>
-<script src="js/interact.min.js"></script>
-<script src="js/domflow.js"></script>
-</head>
-
+<!doctype html>
+<link href='css/Lato.css' rel='stylesheet' type='text/css' />
+<link href='dragula/dragula.css' rel='stylesheet' type='text/css' />
+<link href='dragula/domflow.css' rel='stylesheet' type='text/css' />
+<title>DomFlow - Hookish!</title>
+<h1>DomFlow - Hookish!</h1>
+<h3>Analyze DOM sources and sinks</h3>
 <body>
+<div class="parent">
+    <div class='left'>
+        <h3>Sources</h3>
+        <div id='sources' class='container'>
+            <div data-type="source">location.hash</div>
+            <div data-type="source">window.name</div>
+            <div data-type="source">document.referrer</div>
+            <div data-type="source">document.cookie</div>
+            <div data-type="source">XMLHttpRequest</div>
+            <div data-type="source">WebSocket</div>
+        </div>
+    </div>
 
-<div id="no-drop" class="draggable drag-drop"> #no-drop </div>
-
-<div id="yes-drop" class="draggable drag-drop"> #yes-drop </div>
-
-<div id="outer-dropzone" class="dropzone">
-    #outer-dropzone
-    <div id="inner-dropzone" class="dropzone">#inner-dropzone</div>
+    <div class="right">
+        <h3>Sinks</h3>
+        <div id='sinks' class='container'>
+            <div data-type="sink">innerHTML</div>
+            <div data-type="sink">outerHTML</div>
+            <div data-type="sink">window.eval</div>
+            <div data-type="sink">window.setTimeout</div>
+            <div data-type="sink">document.write</div>
+            <div data-type="sink">window.setInterval</div>
+        </div>
+    </div>
 </div>
 
-</body>
+<div class="container" id="dragToMe">
+    Drag sources and sinks to me
+</div>
 
+<script src='dragula/dragula.js'></script>
+<script src='dragula/domflow.js'></script>
+
+</body>
 </html>

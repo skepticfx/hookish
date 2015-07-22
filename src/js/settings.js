@@ -30,7 +30,7 @@ var initializedDB = {
         do_not_list_preference_key: 'doNotShowDomMutationEvents'
       },
       document_location_hash: {
-        enabled: true,
+        enabled: false,
         description: 'Hook location.hash'
       },
       document_referrer: {
