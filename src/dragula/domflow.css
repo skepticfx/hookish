@@ -76,11 +76,14 @@ ul {
 .left{
     float: left;
     margin: 10px;
+    background-color: #773fbb;
 }
+
 
 .right{
     float: right;
     margin: 10px;
+    background-color: #bb2d2b;
 }
 
 
@@ -157,7 +160,6 @@ button:hover {
 }
 
 #dragToMe div{
-    background-color: #773fbb;
     display: inline-block;
     width: auto;
 }
@@ -175,3 +177,42 @@ button:hover {
     padding: 10px;
     display: table-cell;
 }
+
+#dragToMeInfo{
+    font-weight: 500;
+    font-size: 23px;
+    padding: 10px 10px 10px 10px
+}
+
+#dragToMe div[data-type='source']{
+    background-color: #773fbb;
+    color: #ffffff;
+    float: left;
+}
+
+
+#dragToMe div[data-type='sink']{
+    background-color: #bb2d2b;
+    color: #ffffff;
+    float: right;
+}
+
+
+#identifyFlowsButton{
+    right: 0%;
+    top: 0%;
+    position: fixed;
+    display: none;
+    background-color: #111B25;
+    color: #ffffff;
+    margin: 10px;
+}
+
+
+#identifyFlowsButton:hover{
+    background-color: #000000;
+    color: #53be95;
+}
+
+
+

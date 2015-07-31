@@ -25,7 +25,14 @@ selected.sinks = [];
 
 var drake = dragula([$('sources'), $('sinks'), $('dragToMe')],{
     revertOnSpill: true,
+    invalid: function(el, target){
+      if(el.id === 'dragToMeInfo')
+        return true;
+      if(el.id === 'identifyFlowsButton')
+        return true;
+    },
     accepts: function(el, target, source, sibling){
+      if(el.id === 'dragToMeInfo') return false;
       if(target.id === 'dragToMe')
         return true;
       if((target.id === 'sinks' && el.getAttribute('data-type') === 'source') || (target.id === 'sources' && el.getAttribute('data-type') === 'sink'))
@@ -38,17 +45,50 @@ var drake = dragula([$('sources'), $('sinks'), $('dragToMe')],{
 drake.on('drop', function(el, container, source){
   if(container.id === 'dragToMe'){
     selected[el.getAttribute('data-type') + 's'].pushIfNotExist(el.innerText, function(e){ return e === el.innerText});
-    console.log(selected.sources, selected.sinks)
   }
 
   if(source.id === 'dragToMe' && (container.id === 'sources' || container.id === 'sinks')){
     selected[el.getAttribute('data-type') + 's'].removeElement(el.innerText);
-    console.log(selected.sources, selected.sinks)
+  }
+
+  updateDragMeInfo();
+});
+
+
+drake.on('shadow', function(el, container){
+  if(container.id === 'dragToMe'){
+    $('dragToMeInfo').style.display = 'none';
   }
 });
 
+drake.on('dragend', function(el){
+  updateDragMeInfo();
+});
 
 function $ (id) {
   return document.getElementById(id);
 }
 
+
+function updateDragMeInfo(){
+  if(selected.sources.length + selected.sinks.length === 0){
+    $('dragToMeInfo').style.display = 'block';
+    $('identifyFlowsButton').style.display = 'none';
+  } else {
+    $('dragToMeInfo').style.display = 'none';
+      if(selected.sources.length >= 1 && selected.sinks.length >= 1){
+        $('identifyFlowsButton').style.display = 'block';
+      } else {
+        $('identifyFlowsButton').style.display = 'none';
+      }
+  }
+}
+
+
+document.addEventListener("DOMContentLoaded", function(event) {
+  $('identifyFlowsButton').onclick = function(e){
+    console.log(selected);
+  };
+
+
+});

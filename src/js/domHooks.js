@@ -4,7 +4,14 @@ var domHooks = {
 
     var Taints = {};
     var HOOKISH_TAG = "34758";
+
+    // Add these to all possible sources and track them in all possible sinks.
     Taints.XHR_JSON_RESPONSE = HOOKISH_TAG + "_XHR_JSON_RES";
+    Taints.XHR_RESPONSE = HOOKISH_TAG + "_XHR_RES";
+    Taints.DOCUMENT_REFERRER = HOOKISH_TAG + "_DOC_REFERRER";
+    Taints.WINDOW_NAME = HOOKISH_TAG + "_WIN_NAME";
+    Taints.DOCUMENT_COOKIE = HOOKISH_TAG + "_DOC_COOKIE";
+
 
     var original_document_domain = document.domain;
     var track = {};
@@ -26,7 +33,7 @@ var domHooks = {
         type: "FROM_HOOKISH",
         'obj': obj
       }, "*");
-    }
+    };
 
 
     track.xhr.add = function(obj) {
@@ -38,7 +45,7 @@ var domHooks = {
         type: "FROM_HOOKISH",
         'obj': obj
       }, "*");
-    }
+    };
 
     track.unsafeAnchors.add = function(obj) {
       track.unsafeAnchors.push(obj);
@@ -47,7 +54,7 @@ var domHooks = {
         type: "FROM_HOOKISH",
         'obj': obj
       }, "*");
-    }
+    };
 
     track.ws.add = function(obj) {
       track.ws.push(obj);
@@ -58,7 +65,7 @@ var domHooks = {
         type: "FROM_HOOKISH",
         'obj': obj
       }, "*");
-    }
+    };
 
     setHookishTagSettings = function(data){
       var settings = {};
@@ -74,12 +81,22 @@ var domHooks = {
     return settings;
     }
 
+    removeTagsForSetter = function(val, hookishTagSettings){
+      if(hookishTagSettings.tagged === true){
+        // Remove our tags from the actual sink, if present.
+        hookishTagSettings.taintedClassName = 'taintedSink';
+        return val.replace(new RegExp(hookishTagSettings.tagName, "gi"), '');
+      }
+    }
+
   },
 
 
   /**
    * Hooking Element.prototype.innerHTML
-   * This will take care of all Node.innerHTML.
+   * This will take care of all Node.innerHTML, Node.outerHTML etc.
+   *
+   * Getters & setters for Element.prototype: http://domstorm.skepticfx.com/modules/?id=55b00aaf34473500003d257d
    */
 
   dom_nodes: function(){
@@ -91,11 +108,7 @@ var domHooks = {
       Object.defineProperty(Element.prototype, prop, {
         set: function(){
           var hookishTagSettings = setHookishTagSettings(arguments[0]);
-          if(hookishTagSettings.tagged === true){
-            // Remove our tags if the actual sinks if present.
-            hookishTagSettings.taintedClassName = 'taintedSink';
-            arguments[0] = arguments[0].replace(new RegExp(hookishTagSettings.tagName, "gi"), '');
-          }
+          arguments[0] = removeTagsForSetter(arguments[0], hookishTagSettings);
           track.customHook.add(new Object({
             'type': 'sink',
             'data': arguments[0],
@@ -115,7 +128,7 @@ var domHooks = {
 
   /**
    * Chrome >43 has disabled accessor, mutator for document.location :(
-   * Need to wait and see. ES6 Proxy ?
+   * Need to wait and see. ES6 Proxy ? No
    */
 
   document_location_hash: function() {
@@ -161,7 +174,7 @@ var domHooks = {
       }
     });
   },
-  // window.name doesn't have the native __getter__
+  // window.name doesn't have the native __getter__ / __setter__
   window_name: function() {
     var global = {};
     global.current_window_name = window.name;
@@ -170,7 +183,7 @@ var domHooks = {
         current_window_name = global.current_window_name;
         track.customHook.add(new Object({
           'type': 'source',
-          'data': current_window_name,
+          'data': current_window_name.toString() + Taints.WINDOW_NAME,
           'section': 'sources',
           'meta': functionCallTracer()
         }), 'window_name');
@@ -213,7 +226,7 @@ var domHooks = {
           'section': 'sinks',
           'meta': functionCallTracer()
         }), 'document_cookie');
-        return cookie_getter.apply(this, arguments);
+        return cookie_setter.apply(this, arguments);
       }
 
     });
@@ -222,6 +235,7 @@ var domHooks = {
   window_eval: function() {
     var original_window_eval = window.eval;
     window.eval = function() {
+      arguments[0] = removeTagsForSetter(arguments[0]);
       track.customHook.add(new Object({
         'type': 'sink',
         'data': arguments[0],
@@ -234,6 +248,7 @@ var domHooks = {
   document_write: function() {
     var original_document_write = document.write;
     document.write = function() {
+      arguments[0] = removeTagsForSetter(arguments[0]);
       track.customHook.add(new Object({
         'type': 'sink',
         'data': arguments[0],
@@ -246,6 +261,7 @@ var domHooks = {
   window_setTimeout: function() {
     var original_window_setTimeout = window.setTimeout;
     window.setTimeout = function() {
+      arguments[0] = removeTagsForSetter(arguments[0]);
       track.customHook.add(new Object({
         'type': 'sink',
         'section': 'sinks',
@@ -258,6 +274,7 @@ var domHooks = {
   window_setInterval: function() {
     var original_window_setInterval = window.setInterval;
     window.setInterval = function() {
+      arguments[0] = removeTagsForSetter(arguments[0]);
       track.customHook.add(new Object({
         'type': 'sink',
         'section': 'sinks',
@@ -273,18 +290,26 @@ var domHooks = {
     xhook.after(function(req, res) {
       console.log(req);
       console.log(res);
-      // Lets tamper with the response
-      resBody = res.text.toString().trim();
+
+      var resBody = res.text.toString().trim();
+
+      // **XHR_JSON_RES** - Taint every key-values in JSON response. Will be removed after found in a sink.
+      // Others will remain, which may break flow of the actual app.
       if (resBody[0] === '{' && resBody[resBody.length - 1] === '}') {
         resBody = JSON.parse(resBody);
         Object.keys(resBody).forEach(function(key) {
            // Tainting all the values of a JSON XHR Response.
           resBody[key] = resBody[key] + Taints.XHR_JSON_RESPONSE;
-        })
+        });
         resBody = JSON.stringify(resBody);
-        res.text = resBody.toString();
-        console.log("Modified response: " + res.text)
+      } else {
+        // Non-JSON response. Append taint to the end of string.
+        resBody = resBody.toString() + Taints.XHR_RESPONSE;
       }
+
+      res.text = resBody.toString();
+      console.log("Modified response: " + res.text);
+
       track.xhr.add({ // need to add more OBJECTs!!
         method: req.method,
         url: req.url,
@@ -301,7 +326,7 @@ var domHooks = {
         url: event.url,
         type: 'response' // onMessage from the server
       });
-    }
+    };
 
     wsHook.onSend = function(event) {
       console.log("ws sent: " + event);
@@ -310,7 +335,7 @@ var domHooks = {
         url: event.url,
         type: 'request' // onSend to the server
       });
-    }
+    };
   },
 
   dom_text_node_mutation: function() {

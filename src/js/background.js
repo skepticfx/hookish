@@ -2,12 +2,12 @@
 // NOT_STARTED -> STARTED -> RUNNING -> CLOSED -> NOT_STARTED
 var devMode = false;
 var globalState = false;
-var initDomain = 'localhost';
+var initDomain = 'damnvulnerable.me';
 
 if (chrome.runtime.getManifest().update_url == null) {
   devMode = true;
   globalState = true;
-  initDomain = 'localhost';
+  initDomain = 'damnvulnerable.me';
   window.onerror = function(err) {
     alert("Some error occured: " + err);
   }
