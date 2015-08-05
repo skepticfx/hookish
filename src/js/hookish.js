@@ -6,8 +6,7 @@ $(function() {
     populateHookishSections('hookishSections', db);
     populateSettingsBody('section_settings_body', db);
     populateSectionTableBodyWithHooks(db);
-
-    console.log(db);
+    setupLinks(db);
 
 
     // Listen to dynamic chrome.storage events

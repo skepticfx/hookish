@@ -14,11 +14,16 @@ var initializedDB = {
     window_setInterval: [],
     xhr: [],
     ws: [],
-    unsafeAnchors: []
+    unsafeAnchors: [],
+    globalVariables: []
   },
   settings: {
     // Everything that will be hooked
     hooks: {
+      globalVariables: {
+        enabled: true,
+        description: 'Fetch all Global Variables'
+      },
       dom_nodes: {
         enabled: true,
         description: 'Hook all DOM properties (innerHTML etc)',
@@ -73,7 +78,7 @@ var initializedDB = {
         libToInject: "wshook"
       },
       unsafeAnchors: {
-        enabled: false,
+        enabled: true,
         description: 'Hook anchor tags',
         xdomain: true
       }
@@ -114,6 +119,11 @@ var initializedDB = {
       settingName: 'ws',
       displayName: 'WebSockets',
       tableHeadings: ['Type', 'Data']
+    },
+    unsafeAnchors: {
+      settingName: 'unsafeAnchors',
+      displayName: 'Anchor tags to analyze (target=_blank)',
+      tableHeadings: ['Href']
     }
 
   }

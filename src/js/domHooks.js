@@ -4,6 +4,7 @@ var domHooks = {
 
     var Taints = {};
     var HOOKISH_TAG = "34758";
+    var Originals = {};
 
     // Add these to all possible sources and track them in all possible sinks.
     Taints.XHR_JSON_RESPONSE = HOOKISH_TAG + "_XHR_JSON_RES";
@@ -25,7 +26,8 @@ var domHooks = {
     track.customHook.add = function(obj, nature) {
       track.customHook.push(obj);
       console.log(obj, nature)
-      console.log(obj.type + " called with value " + obj.data.slice(0, 100));
+      if (obj.data && obj.data.length >= 0)
+        console.log(obj.type + " called with value " + obj.data.slice(0, 100));
       obj.name = nature.toString();
       obj.domain = track.domain;
       obj.href = track.href;
@@ -67,22 +69,22 @@ var domHooks = {
       }, "*");
     };
 
-    setHookishTagSettings = function(data){
+    setHookishTagSettings = function(data) {
       var settings = {};
       settings.tagged = false;
       settings.taintedClassName = '';
       // search the data for HOOKISH_TAGS from Taints.
-      for(taintTag in Taints){
-        if(data.includes(Taints[taintTag])){
+      for (taintTag in Taints) {
+        if (data.includes(Taints[taintTag])) {
           settings.tagged = true;
           settings.tagName = Taints[taintTag];
         }
       }
-    return settings;
+      return settings;
     }
 
-    removeTagsForSetter = function(val, hookishTagSettings){
-      if(hookishTagSettings.tagged === true){
+    removeTagsForSetter = function(val, hookishTagSettings) {
+      if (hookishTagSettings && hookishTagSettings.tagged === true) {
         // Remove our tags from the actual sink, if present.
         hookishTagSettings.taintedClassName = 'taintedSink';
         return val.replace(new RegExp(hookishTagSettings.tagName, "gi"), '');
@@ -99,19 +101,19 @@ var domHooks = {
    * Getters & setters for Element.prototype: http://domstorm.skepticfx.com/modules/?id=55b00aaf34473500003d257d
    */
 
-  dom_nodes: function(){
+  dom_nodes: function() {
     console.log("Hooking DOM Noodes");
     var props = ['innerHTML', 'outerHTML'];
 
-    props.forEach(function(prop){
+    props.forEach(function(prop) {
       var setter = Element.prototype.__lookupSetter__(prop);
       Object.defineProperty(Element.prototype, prop, {
-        set: function(){
+        set: function() {
           var hookishTagSettings = setHookishTagSettings(arguments[0]);
           arguments[0] = removeTagsForSetter(arguments[0], hookishTagSettings);
           track.customHook.add(new Object({
             'type': 'sink',
-            'data': arguments[0],
+            'data': arguments[0] || '',
             'nodeName': this.nodeName,
             'propertyName': prop,
             'fullName': this.nodeName + '.' + prop,
@@ -136,26 +138,26 @@ var domHooks = {
     var hash_getter = document.location.__lookupGetter__('hash');
     Object.defineProperty(location, "hash", {
       get: function() {
-        var h = hash_getter.apply(this, arguments);
-        track.customHook.add(new Object({
-          'type': 'source',
-          'data': h,
-          'section': 'sources',
-          'meta': functionCallTracer()
-        }), 'document_location_hash');
-        return h;
-      }
-      /*
-      ,
-      set: function(val) {
-        track.customHook.add(new Object({
-          'type': 'sink',
-          'data': val,
-          'section': 'sinks',
-          'meta': functionCallTracer()
-        }), 'document_location_hash');
-        return hash_getter.apply(this, arguments);
-      }*/
+          var h = hash_getter.apply(this, arguments);
+          track.customHook.add(new Object({
+            'type': 'source',
+            'data': h,
+            'section': 'sources',
+            'meta': functionCallTracer()
+          }), 'document_location_hash');
+          return h;
+        }
+        /*
+        ,
+        set: function(val) {
+          track.customHook.add(new Object({
+            'type': 'sink',
+            'data': val,
+            'section': 'sinks',
+            'meta': functionCallTracer()
+          }), 'document_location_hash');
+          return hash_getter.apply(this, arguments);
+        }*/
 
     });
   },
@@ -210,15 +212,15 @@ var domHooks = {
     var cookie_getter = document.__lookupGetter__('cookie');
     Object.defineProperty(document, "cookie", {
       get: function() {
-          var c = cookie_getter.apply(this, arguments);
-          track.customHook.add(new Object({
-            'type': 'source',
-            'data': c,
-            'section': 'sources',
-            'meta': functionCallTracer()
-          }), 'document_cookie');
-          return c;
-        },
+        var c = cookie_getter.apply(this, arguments);
+        track.customHook.add(new Object({
+          'type': 'source',
+          'data': c,
+          'section': 'sources',
+          'meta': functionCallTracer()
+        }), 'document_cookie');
+        return c;
+      },
       set: function(val) {
         track.customHook.add(new Object({
           'type': 'sink',
@@ -235,12 +237,14 @@ var domHooks = {
   window_eval: function() {
     var original_window_eval = window.eval;
     window.eval = function() {
-      arguments[0] = removeTagsForSetter(arguments[0]);
+      var hookishTagSettings = setHookishTagSettings(arguments[0]);
+      arguments[0] = removeTagsForSetter(arguments[0], hookishTagSettings);
       track.customHook.add(new Object({
         'type': 'sink',
-        'data': arguments[0],
+        'data': arguments[0] || '',
         'section': 'sinks',
-        'meta': functionCallTracer()
+        'meta': functionCallTracer(),
+        'hookishTagSettings': hookishTagSettings
       }), 'window_eval');
       return original_window_eval.apply(this, arguments);
     }
@@ -248,12 +252,14 @@ var domHooks = {
   document_write: function() {
     var original_document_write = document.write;
     document.write = function() {
-      arguments[0] = removeTagsForSetter(arguments[0]);
+      var hookishTagSettings = setHookishTagSettings(arguments[0]);
+      arguments[0] = removeTagsForSetter(arguments[0], hookishTagSettings);
       track.customHook.add(new Object({
         'type': 'sink',
-        'data': arguments[0],
+        'data': arguments[0] || '',
         'section': 'sinks',
-        'meta': functionCallTracer()
+        'meta': functionCallTracer(),
+        'hookishTagSettings': hookishTagSettings
       }), 'document_write');
       return original_document_write.apply(this, arguments);
     }
@@ -261,12 +267,14 @@ var domHooks = {
   window_setTimeout: function() {
     var original_window_setTimeout = window.setTimeout;
     window.setTimeout = function() {
-      arguments[0] = removeTagsForSetter(arguments[0]);
+      var hookishTagSettings = setHookishTagSettings(arguments[0]);
+      arguments[0] = removeTagsForSetter(arguments[0], hookishTagSettings);
       track.customHook.add(new Object({
         'type': 'sink',
         'section': 'sinks',
-        'data': arguments[0].toString(),
-        'meta': functionCallTracer()
+        'data': arguments[0].toString() || '',
+        'meta': functionCallTracer(),
+        'hookishTagSettings': hookishTagSettings
       }), 'window_setTimeout');
       return original_window_setTimeout.apply(this, arguments)
     }
@@ -274,12 +282,14 @@ var domHooks = {
   window_setInterval: function() {
     var original_window_setInterval = window.setInterval;
     window.setInterval = function() {
-      arguments[0] = removeTagsForSetter(arguments[0]);
+      var hookishTagSettings = setHookishTagSettings(arguments[0]);
+      arguments[0] = removeTagsForSetter(arguments[0], hookishTagSettings);
       track.customHook.add(new Object({
         'type': 'sink',
         'section': 'sinks',
-        'data': arguments[0].toString(),
-        'meta': functionCallTracer()
+        'data': arguments[0].toString() || '',
+        'meta': functionCallTracer(),
+        'hookishTagSettings': hookishTagSettings
       }), 'window_setInterval');
       return original_window_setInterval.apply(this, arguments)
     }
@@ -298,7 +308,7 @@ var domHooks = {
       if (resBody[0] === '{' && resBody[resBody.length - 1] === '}') {
         resBody = JSON.parse(resBody);
         Object.keys(resBody).forEach(function(key) {
-           // Tainting all the values of a JSON XHR Response.
+          // Tainting all the values of a JSON XHR Response.
           resBody[key] = resBody[key] + Taints.XHR_JSON_RESPONSE;
         });
         resBody = JSON.stringify(resBody);
@@ -373,22 +383,51 @@ var domHooks = {
       // Convert HTMLCollection to Array
       anchors = [].slice.call(anchors);
       anchors.forEach(function(anchor) {
-        if ('target' in anchor && anchor.target == '_blank') {
-          var anchorCopy = anchor.cloneNode();
-          var tmpNode = document.createElement("div");
-          tmpNode.appendChild(anchorCopy);
-          track.unsafeAnchors.add({
-            href: anchor.href,
-            target: anchor.target,
-            hostname: anchor.hostname,
-            string: tmpNode.innerHTML.toString()
-          });
-          delete tmpNode;
+        //TODO: Does list only cross-domain now. Need to add a preference
+        if (!new URL(anchor.href).host.includes(location.host)) {
+          if ('target' in anchor && anchor.target == '_blank' && anchor.rel !== 'noreferrer') {
+            var anchorCopy = anchor.cloneNode();
+            var tmpNode = document.createElement("div");
+            tmpNode.appendChild(anchorCopy);
+            track.unsafeAnchors.add({
+              href: anchor.href,
+              target: anchor.target,
+              hostname: anchor.hostname,
+              string: tmpNode.innerHTML.toString(),
+              section: 'unsafeAnchors'
+            });
+            delete tmpNode;
+          }
         }
-      })
-      console.log(anchors);
+      });
+      //console.log(anchors);
     }
     window.addEventListener("load", hookUnsafeAnchors, false);
+  },
+
+  globalVariables: function() {
+    // Fetch this very late.
+    window.onload = function() {
+      var globals = [];
+      for (var b in window) {
+        // Blacklist
+        // window.closed is a global boolean exposed in Chrome.
+        if (["closed", "name", "webkitStorageInfo", "webkitIndexedDB"].indexOf(b) !== -1) continue;
+        if (window.hasOwnProperty(b) && typeof window[b] == "boolean") {
+          globals.push(b);
+        }
+      }
+      console.log("Globally exposed variables");
+      console.log(globals);
+      globals.forEach(function(global) {
+        track.customHook.add(new Object({
+          'type': 'list',
+          'data': global,
+          'section': 'none'
+        }), 'globalVariables');
+      })
+
+    }
   }
 
 }

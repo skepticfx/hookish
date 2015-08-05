@@ -3,7 +3,7 @@
 // String.prototype.startsWith
 if (typeof String.prototype.startsWith != 'function') {
   // see below for better implementation!
-  String.prototype.startsWith = function (str){
+  String.prototype.startsWith = function(str) {
     return this.indexOf(str) === 0;
   };
 }
@@ -25,7 +25,7 @@ var addToTableBody = {
   },
 
   dom_nodes: function(obj, node) {
-    node.prepend('<tr class="showRowOptions '+obj.hookishTagSettings.taintedClassName+'"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions ' + obj.hookishTagSettings.taintedClassName + '"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   window_name: function(obj, node) {
@@ -45,11 +45,11 @@ var addToTableBody = {
   },
 
   window_eval: function(obj, node) {
-    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions ' + obj.hookishTagSettings.taintedClassName + '"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   document_write: function(obj, node) {
-    node.prepend('<tr class="showRowOptions"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
+    node.prepend('<tr class="showRowOptions ' + obj.hookishTagSettings.taintedClassName + '"><td><strong>' + htmlEscape(obj.name) + '</strong></td><td class="callStack" data-callStack="' + htmlEscape(obj.meta) + '">' + htmlEscape(obj.type) + '</td><td title="' + htmlEscape(obj.data) + '">' + this.stripped(htmlEscape(obj.data), 50) + '</td><td>' + htmlEscape(obj.href) + '</td></tr>');
   },
 
   ws: function(obj, node) {
@@ -58,6 +58,10 @@ var addToTableBody = {
 
   xhr: function(obj, node) {
     node.prepend('<tr class="showRowOptions"><td>' + htmlEscape(obj.method) + '</td><td>' + htmlEscape(obj.url) + '</td></tr>');
+  },
+
+  unsafeAnchors: function(obj, node) {
+    node.prepend('<tr><td>' + htmlEscape(obj.href) + '</td></tr>');
   }
 
 }
@@ -76,7 +80,9 @@ function populateSectionTableBodyWithHooks(db) {
       $('#empty_section_table_body_' + hookSectionName).hide();
       hooksList.forEach(function(actualHookObject) {
         hookSectionName = actualHookObject.section;
-        addToTableBody[actualHookObject.name](actualHookObject, $("#section_table_body_" + hookSectionName));
+        if (typeof addToTableBody[actualHookObject.name] === 'function') {
+          addToTableBody[actualHookObject.name](actualHookObject, $("#section_table_body_" + hookSectionName));
+        }
       })
     }
   })
@@ -166,11 +172,11 @@ function populateSettingsBody(id, db) {
   });
 }
 
-function promptBootBox(db, preservePerviousConfig){
+function promptBootBox(db, preservePerviousConfig) {
   bootbox.prompt({
-    title: 'Enter the domain you want to run Hookish! (Eg: github.com)',
+    title: 'Enter the domain you want to run Hookish! (Eg: damnvulnerable.me)',
     value: getHostname(db.domain),
-    callback: function(domain) {console.log(domain);
+    callback: function(domain) {
       domain = getHostname(domain);
       if (domain != null && domain.length > 0) {
         db.state = true;
@@ -186,7 +192,7 @@ function promptBootBox(db, preservePerviousConfig){
         }, 200);
         // clear table
       } else {
-        if(!preservePerviousConfig) {
+        if (!preservePerviousConfig) {
           $('#status').bootstrapSwitch('state', false);
           initializeDB();
           $('#domain').html('');
@@ -199,12 +205,14 @@ function promptBootBox(db, preservePerviousConfig){
 function setupPage(db) {
   var statusNode = $('#status');
   var domainNode = $('#domain');
-  $(domainNode).click(function(){
+  $(domainNode).click(function() {
     promptBootBox(db, true);
   });
 
   statusNode.bootstrapSwitch('state', db.state);
-  if (db.state) {$('#domain').html(getHostname(db.domain));}
+  if (db.state) {
+    $('#domain').html(getHostname(db.domain));
+  }
 
   statusNode.on('switchChange.bootstrapSwitch', function(event, state) {
     if (state == true) {
@@ -225,14 +233,15 @@ function updateSectionTableBodyWithHooks(changes, db) {
     Object.keys(hooks.newValue).forEach(function(hookName) {
       if (hooks.newValue[hookName].length !== hooks.oldValue[hookName].length) {
         var hookObject = hooks.newValue[hookName][hooks.newValue[hookName].length - 1];
-        if(db.settings.hooks[hookObject.name].do_not_list_preference_key !== undefined &&
+        if (db.settings.hooks[hookObject.name].do_not_list_preference_key !== undefined &&
           db.settings.preferences[db.settings.hooks[hookObject.name].do_not_list_preference_key].enabled == true)
-            return;
+          return;
         var hookSectionName = hookObject.section;
-        console.log('#empty_section_table_body_' + hookSectionName);
         // Need to optimize to run only when table has no elements.
         $('#empty_section_table_body_' + hookSectionName).hide();
-        addToTableBody[hookObject.name](hookObject, $("#section_table_body_" + hookSectionName));
+        if (typeof addToTableBody[hookObject.name] === 'function') {
+          addToTableBody[hookObject.name](hookObject, $("#section_table_body_" + hookSectionName));
+        }
       }
     })
   }
@@ -270,44 +279,60 @@ function initPage() {
 
 }
 
-function setupContextMenu(){
-  var menu = contextmenu([
-    {
-      label: "First Item",
-      onclick: function (e){
-        document.body.style.background = "black";
-        setTimeout(function() {
-          document.body.style.background = "";
-        }, 500);
+// All list type hrefs will go here.
+function setupLinks(db) {
+  $("#listGlobalVariables").click(function() {
+    // we want the latest data
+    chrome.storage.local.get("hooks", function(db) {
+      var globals = db.hooks.globalVariables;
+      var globalsString = "";
+      if (globals) {
+        globals.forEach(function(global) {
+          globalsString += global.data + " "
+        })
       }
-    },
-    {label: "Second Item"},
-    {hr : true},
-    {
-      label: "Sub menu",
-      children: [
-        {
-          label: "Another Item"
-        }
-      ]
+      alert(globalsString);
+    });
+
+  });
+}
+
+
+function setupContextMenu() {
+  var menu = contextmenu([{
+    label: "First Item",
+    onclick: function(e) {
+      document.body.style.background = "black";
+      setTimeout(function() {
+        document.body.style.background = "";
+      }, 500);
     }
-  ]);
+  }, {
+    label: "Second Item"
+  }, {
+    hr: true
+  }, {
+    label: "Sub menu",
+    children: [{
+      label: "Another Item"
+    }]
+  }]);
 
 
-// Right click the container
-  $(document).on("contextmenu", ".showRowOptions", function(e){
-    e.preventDefault();
-    console.log(e)
-    console.log(this)
-    contextmenu.show(menu, this.clientX, this.clientY);
-  })
-  //contextmenu.attach($(".showRowOptions"), menu);
+  // Right click the container
+  $(document).on("contextmenu", ".showRowOptions", function(e) {
+      e.preventDefault();
+      contextmenu.show(menu, this.clientX, this.clientY);
+    })
+    //contextmenu.attach($(".showRowOptions"), menu);
 }
 
 // Real Utils.
-function printDB() {
+function printDB(cb) {
   chrome.storage.local.get(null, function(x) {
-    console.log(x)
+    console.log(x);
+    if (cb !== null && cb !== undefined)
+      cb(x);
   })
 }
 
@@ -330,12 +355,12 @@ function htmlEscape(str) {
     .replace(/>/g, '&gt;');
 }
 
-function getHostname(input){console.log(input)
-  if(input === null || input === undefined || input.length === 0)
+function getHostname(input) {
+  if (input === null || input === undefined || input.length === 0)
     return 'localhost';
   input = input.toString().trim();
-  if(!input.startsWith('http://') && !input.startsWith('https://'))
-    input = 'https://'+input;
+  if (!input.startsWith('http://') && !input.startsWith('https://'))
+    input = 'https://' + input;
   var url = new URL(input);
   return url.hostname;
 }

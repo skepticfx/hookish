@@ -85,7 +85,7 @@ chrome.storage.local.get(null, function(db) {
 });
 
 
-function isEmptyHook(db, incoming){
+function isEmptyHook(db, incoming) {
   return (db.settings.preferences.ignoreEmptyValues.enabled === true && incoming.data !== undefined && incoming.data !== null && incoming.data.toString().trim().length === 0);
 }
 
@@ -93,6 +93,7 @@ function isDuplicateHook(hook, incoming) {
 
   // For sources and sinks types.
   // TODO: Add meta data comparison
+
   if (incoming.type === 'source' || incoming.type === 'sink') {
     var hookData = hook.data.toString().trim();
     var incomingData = incoming.data.toString().trim();
@@ -101,8 +102,8 @@ function isDuplicateHook(hook, incoming) {
     var incomingType = incoming.type;
 
     // Handling special cases for dom_nodes
-    if(hook.name === "dom_nodes" && incoming.name === "dom_nodes"){
-      if(hook.fullName === incoming.fullName && hookData === incomingData){
+    if (hook.name === "dom_nodes" && incoming.name === "dom_nodes") {
+      if (hook.fullName === incoming.fullName && hookData === incomingData) {
         return true;
       }
       return false;
@@ -122,4 +123,3 @@ function injectScript(scriptString) {
   (document.head || document.documentElement).appendChild(script);
   script.parentNode.removeChild(script);
 }
-
