@@ -10,24 +10,24 @@
     <div class='left'>
         <h3>Sources</h3>
         <div id='sources' class='container'>
-            <div data-type="source">location.hash</div>
-            <div data-type="source">window.name</div>
-            <div data-type="source">document.referrer</div>
-            <div data-type="source">document.cookie</div>
-            <div data-type="source">XMLHttpRequest</div>
-            <div data-type="source">WebSocket</div>
+            <div data-type="source" data-name="location_hash">location.hash</div>
+            <div data-type="source" data-name="window_name">window.name</div>
+            <div data-type="source" data-name="document_referrer">document.referrer</div>
+            <div data-type="source" data-name="document_cookie">document.cookie</div>
+            <div data-type="source" data-name="xhr">XMLHttpRequest</div>
+            <div data-type="source" data-name="ws">WebSocket</div>
         </div>
     </div>
 
     <div class="right">
         <h3>Sinks</h3>
         <div id='sinks' class='container'>
-            <div data-type="sink">innerHTML</div>
-            <div data-type="sink">outerHTML</div>
-            <div data-type="sink">window.eval</div>
-            <div data-type="sink">window.setTimeout</div>
-            <div data-type="sink">document.write</div>
-            <div data-type="sink">window.setInterval</div>
+            <div data-type="sink" data-name="dom_nodes">innerHTML</div>
+            <div data-type="sink" data-name="dom_nodes">outerHTML</div>
+            <div data-type="sink" data-name="window_eval">window.eval</div>
+            <div data-type="sink" data-name="window_setTimeout">window.setTimeout</div>
+            <div data-type="sink" data-name="document_write">document.write</div>
+            <div data-type="sink" data-name="window_setInterval">window.setInterval</div>
         </div>
     </div>
 </div>
@@ -39,6 +39,7 @@
 
 <script src='dragula/dragula.js'></script>
 <script src='dragula/domflow.js'></script>
+<script src='js/taintAnalyzer.js'></script>
 
 </body>
 </html>

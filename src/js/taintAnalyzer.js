@@ -35,9 +35,9 @@ function analyzeDomNodes() {
  * @param sources
  * @param sinks
  * @returns {Array}
- */
 
-function identidyDomFlows(sources, sinks) {
+
+function identifyDomFlows(sources, sinks) {
   if (sources instanceof Array && sinks instanceof Array) return [];
   var results = [];
   sources.forEach(function(source) {
@@ -47,13 +47,30 @@ function identidyDomFlows(sources, sinks) {
     });
   });
 
-  return results;
+  //return results;
 }
 
 
 function findSourceToSink(source, sink) {
   chrome.storage.local.get("hooks", function(obj) {
     var hooks = obj.hooks;
+    alert(source, sink)
 
   });
+}
+ */
+
+function identifyDomFlows(sources, sinks) {
+  sinks.forEach(function(sink) {
+    chrome.storage.local.get("hooks", function(db) {
+      var hooks = db.hooks;
+      hooks[sink].forEach(function(hookObject) {
+        if (hookObject.hookishTagSettings && hookObject.hookishTagSettings.tagged === true) {
+          alert(getTaintName(hookObject.hookishTagSettings.tagName) + " flows into  " + sink);
+          console.log(hookObject.meta.split("\n")[0].trim().slice(2));
+        }
+      })
+    })
+  })
+
 }

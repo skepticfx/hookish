@@ -44,11 +44,11 @@ var drake = dragula([$('sources'), $('sinks'), $('dragToMe')],{
 
 drake.on('drop', function(el, container, source){
   if(container.id === 'dragToMe'){
-    selected[el.getAttribute('data-type') + 's'].pushIfNotExist(el.innerText, function(e){ return e === el.innerText});
+    selected[el.getAttribute('data-type') + 's'].pushIfNotExist(el.getAttribute('data-name'), function(e){ return e === el.getAttribute('data-name')});
   }
 
   if(source.id === 'dragToMe' && (container.id === 'sources' || container.id === 'sinks')){
-    selected[el.getAttribute('data-type') + 's'].removeElement(el.innerText);
+    selected[el.getAttribute('data-type') + 's'].removeElement(el.getAttribute('data-name'));
   }
 
   updateDragMeInfo();
@@ -87,7 +87,7 @@ function updateDragMeInfo(){
 
 document.addEventListener("DOMContentLoaded", function(event) {
   $('identifyFlowsButton').onclick = function(e){
-    console.log(selected);
+    identifyDomFlows(selected.sources, selected.sinks);
   };
 
 

@@ -7,7 +7,7 @@ var initDomain = 'damnvulnerable.me';
 if (chrome.runtime.getManifest().update_url == null) {
   devMode = true;
   globalState = true;
-  initDomain = 'damnvulnerable.me';
+  initDomain = 'localhost';
   window.onerror = function(err) {
     alert("Some error occured: " + err);
   }

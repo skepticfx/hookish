@@ -89,6 +89,7 @@ var domHooks = {
         hookishTagSettings.taintedClassName = 'taintedSink';
         return val.replace(new RegExp(hookishTagSettings.tagName, "gi"), '');
       }
+      return val;
     }
 
   },
@@ -102,7 +103,7 @@ var domHooks = {
    */
 
   dom_nodes: function() {
-    console.log("Hooking DOM Noodes");
+    console.log("Hooking DOM Nodes");
     var props = ['innerHTML', 'outerHTML'];
 
     props.forEach(function(prop) {
@@ -384,20 +385,18 @@ var domHooks = {
       anchors = [].slice.call(anchors);
       anchors.forEach(function(anchor) {
         //TODO: Does list only cross-domain now. Need to add a preference
-        if (!new URL(anchor.href).host.includes(location.host)) {
-          if ('target' in anchor && anchor.target == '_blank' && anchor.rel !== 'noreferrer') {
-            var anchorCopy = anchor.cloneNode();
-            var tmpNode = document.createElement("div");
-            tmpNode.appendChild(anchorCopy);
-            track.unsafeAnchors.add({
-              href: anchor.href,
-              target: anchor.target,
-              hostname: anchor.hostname,
-              string: tmpNode.innerHTML.toString(),
-              section: 'unsafeAnchors'
-            });
-            delete tmpNode;
-          }
+        if ('target' in anchor && anchor.target == '_blank' && anchor.rel !== 'noreferrer') {
+          var anchorCopy = anchor.cloneNode();
+          var tmpNode = document.createElement("div");
+          tmpNode.appendChild(anchorCopy);
+          track.unsafeAnchors.add({
+            href: anchor.href,
+            target: anchor.target,
+            hostname: anchor.hostname,
+            string: tmpNode.innerHTML.toString(),
+            section: 'unsafeAnchors'
+          });
+          delete tmpNode;
         }
       });
       //console.log(anchors);
@@ -417,8 +416,7 @@ var domHooks = {
           globals.push(b);
         }
       }
-      console.log("Globally exposed variables");
-      console.log(globals);
+      console.log("Fetching globally exposed variables");
       globals.forEach(function(global) {
         track.customHook.add(new Object({
           'type': 'list',
