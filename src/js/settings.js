@@ -80,7 +80,7 @@ var initializedDB = {
       unsafeAnchors: {
         enabled: true,
         description: 'Hook anchor tags',
-        xdomain: true
+        xdomain: false
       }
     },
     preferences: {

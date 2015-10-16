@@ -186,7 +186,7 @@ var domHooks = {
         current_window_name = global.current_window_name;
         track.customHook.add(new Object({
           'type': 'source',
-          'data': current_window_name.toString() + Taints.WINDOW_NAME,
+          'data': current_window_name.toString(), // + Taints.WINDOW_NAME,
           'section': 'sources',
           'meta': functionCallTracer()
         }), 'window_name');
@@ -330,20 +330,20 @@ var domHooks = {
   },
 
   ws: function() {
-    wsHook.onMessage = function(event) {
+    wsHook.after = function(event, url) {
       console.log("ws recieved: " + event);
       track.ws.add({
         data: event.data,
-        url: event.url,
+        url: url,
         type: 'response' // onMessage from the server
       });
     };
 
-    wsHook.onSend = function(event) {
+    wsHook.before = function(data, url) {
       console.log("ws sent: " + event);
       track.ws.add({
-        data: event.data,
-        url: event.url,
+        data: data,
+        url: url,
         type: 'request' // onSend to the server
       });
     };
