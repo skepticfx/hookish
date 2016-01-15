@@ -2,44 +2,20 @@
 <link href='css/Lato.css' rel='stylesheet' type='text/css' />
 <link href='dragula/dragula.css' rel='stylesheet' type='text/css' />
 <link href='dragula/domflow.css' rel='stylesheet' type='text/css' />
-<title>DomFlow - Hookish!</title>
-<h1>DomFlow - Hookish!</h1>
-<h3>Analyze DOM sources and sinks</h3>
+<script src='js/libs/esflow.js'></script>
+<script src="js/ui/jquery.js"></script>
+<script src='js/staticAnalysis.js'></script>
+<title>ESFlow - Hookish!</title>
 <body>
-<div class="parent">
-    <div class='left'>
-        <h3>Sources</h3>
-        <div id='sources' class='container'>
-            <div data-type="source" data-name="location_hash">location.hash</div>
-            <div data-type="source" data-name="window_name">window.name</div>
-            <div data-type="source" data-name="document_referrer">document.referrer</div>
-            <div data-type="source" data-name="document_cookie">document.cookie</div>
-            <div data-type="source" data-name="xhr">XMLHttpRequest</div>
-            <div data-type="source" data-name="ws">WebSocket</div>
-        </div>
-    </div>
 
-    <div class="right">
-        <h3>Sinks</h3>
-        <div id='sinks' class='container'>
-            <div data-type="sink" data-name="dom_nodes">innerHTML</div>
-            <div data-type="sink" data-name="dom_nodes">outerHTML</div>
-            <div data-type="sink" data-name="window_eval">window.eval</div>
-            <div data-type="sink" data-name="window_setTimeout">window.setTimeout</div>
-            <div data-type="sink" data-name="document_write">document.write</div>
-            <div data-type="sink" data-name="window_setInterval">window.setInterval</div>
-        </div>
-    </div>
+<h1>Hookish! - Static Analysis</h1>
+<h3></h3>
+
+<button id="startStaticAnalysisButton">Start Analyzing</button>
+<div id="esFlowResults">
+
+
+
 </div>
-
-<div class="container" id="dragToMe">
-    <button id="identifyFlowsButton">Identify flows</button>
-    <span id="dragToMeInfo">Drag sources and sinks to me</span>
-</div>
-
-<script src='dragula/dragula.js'></script>
-<script src='dragula/domflow.js'></script>
-<script src='js/taintAnalyzer.js'></script>
-
 </body>
 </html>

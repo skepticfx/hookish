@@ -416,7 +416,7 @@ var domHooks = {
           globals.push(b);
         }
       }
-      console.log("Fetching globally exposed variables");
+      console.log("Collecting globally exposed variables");
       globals.forEach(function(global) {
         track.customHook.add(new Object({
           'type': 'list',
@@ -426,6 +426,26 @@ var domHooks = {
       })
 
     }
+  },
+
+  jsScripts: function() {
+    // Fetch this very late.
+    window.onload = function() {
+      var scripts = [].slice.call(document.scripts)
+        .map(function(url) {
+          return url.src
+        });
+
+      console.log("Collecting JS Scripts");
+      scripts.forEach(function(src) {
+        track.customHook.add(new Object({
+          'type': 'list',
+          'data': src,
+          'section': 'none'
+        }), 'jsScripts');
+      })
+
+    }
   }
 
-}
+};

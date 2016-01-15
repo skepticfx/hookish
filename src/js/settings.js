@@ -15,7 +15,8 @@ var initializedDB = {
     xhr: [],
     ws: [],
     unsafeAnchors: [],
-    globalVariables: []
+    globalVariables: [],
+    jsScripts: []
   },
   settings: {
     // Everything that will be hooked
@@ -23,6 +24,10 @@ var initializedDB = {
       globalVariables: {
         enabled: true,
         description: 'Fetch all Global Variables'
+      },
+      jsScripts: {
+        enabled: true,
+        description: 'Fetch all scripts (required for static analysis)'
       },
       dom_nodes: {
         enabled: true,
