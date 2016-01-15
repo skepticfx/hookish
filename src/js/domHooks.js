@@ -428,9 +428,9 @@ var domHooks = {
     }
   },
 
-  jsScripts: function() {
+  jsScripts: function(){
     // Fetch this very late.
-    window.onload = function() {
+    document.addEventListener("DOMContentLoaded",  function() {
       var scripts = [].slice.call(document.scripts)
         .map(function(url) {
           return url.src
@@ -445,7 +445,7 @@ var domHooks = {
         }), 'jsScripts');
       })
 
-    }
+    });
   }
 
 };

@@ -288,10 +288,10 @@ function setupLinks(db) {
       var globalsString = "";
       if (globals) {
         globals.forEach(function(global) {
-          globalsString += global.data + " "
+          globalsString += global.data + " <br/>"
         })
       }
-      alert(globalsString);
+      bootbox.alert("<b>Global Variables:</b><br/><br/>" + globalsString);
     });
 
   });

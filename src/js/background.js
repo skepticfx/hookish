@@ -1,4 +1,3 @@
-// BootStrap
 // NOT_STARTED -> STARTED -> RUNNING -> CLOSED -> NOT_STARTED
 var devMode = false;
 var globalState = false;
