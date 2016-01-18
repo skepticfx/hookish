@@ -63,6 +63,10 @@ $(function() {
       var scripts = db.hooks.jsScripts.map(function(jsScript) {
         return jsScript.data;
       });
+      if(scripts.length === 0){
+        log('No scripts to analyze.');
+        return;
+      }
       console.log('Collected scripts:' + scripts);
       log('Initiating ESFlow . . .');
       scripts.forEach(function(script) {

@@ -14,6 +14,27 @@ if (chrome.runtime.getManifest().update_url == null) {
 }
 
 chrome.runtime.onInstalled.addListener(function(details) {
+
+
+  // Context Menu (Right-Click)
+  var contexts = ["all"];
+  var contextId = chrome.contextMenus.create({
+    "id": "contextMenuStaticAnalysis",
+    "title": 'Hookish! Static Analysis',
+    "contexts": ["all"]
+    },
+    function(){
+      console.log(chrome.runtime.lastError);
+    }
+  );
+  chrome.contextMenus.onClicked.addListener(function(info, tabs){
+    console.log(tabs);
+    chrome.tabs.create({
+      url: chrome.extension.getURL('staticAnalysis.html')
+    });
+  });
+
+
   if (details.reason == "install") {
     console.log("This is a first install!");
     chrome.tabs.create({
