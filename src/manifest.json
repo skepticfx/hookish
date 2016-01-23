@@ -4,6 +4,22 @@
    "manifest_version": 2,
    "short_name": "Hook Dom sources and sinks.",
    "version": "0.6.0",
+   "keywords": [
+     "domxss",
+     "xss",
+     "pentest",
+     "security",
+     "code analysis",
+     "static analysis",
+     "penetration testing",
+     "websec",
+     "domflow",
+     "hacking",
+     "dom",
+     "hooking",
+     "javascript analysis",
+     "js analysis"
+   ],
    "permissions": [
      "tabs",
      "contextMenus",

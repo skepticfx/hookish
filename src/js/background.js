@@ -19,18 +19,28 @@ chrome.runtime.onInstalled.addListener(function(details) {
   // Context Menu (Right-Click)
   var contexts = ["all"];
   var contextId = chrome.contextMenus.create({
-    "id": "contextMenuStaticAnalysis",
-    "title": 'Hookish! Static Analysis',
-    "contexts": ["all"]
+      "id": "contextMenuStaticAnalysis",
+      "title": 'Hookish! Statically Analyse this page',
+      "contexts": ["all"]
     },
-    function(){
+    function() {
       console.log(chrome.runtime.lastError);
     }
   );
-  chrome.contextMenus.onClicked.addListener(function(info, tabs){
-    console.log(tabs);
-    chrome.tabs.create({
-      url: chrome.extension.getURL('staticAnalysis.html')
+  chrome.contextMenus.onClicked.addListener(function(info, tabs) {
+    chrome.storage.local.get(null, function(db) {
+      var getScriptSrcCode = "[].slice.call(document.scripts).filter(function(script){return script.src.length>0}).map(function(script) {return script.src})";
+      chrome.tabs.executeScript(tabs.id, {
+        code: getScriptSrcCode,
+        runAt: 'document_end'
+      }, function(scripts) {
+        scripts = scripts[0];
+        db.lastCollectedScripts = scripts;
+        chrome.storage.local.set(db);
+        chrome.tabs.create({
+          url: chrome.extension.getURL('staticAnalysis.html')
+        });
+      });
     });
   });
 

@@ -131,6 +131,8 @@ var initializedDB = {
       tableHeadings: ['Href']
     }
 
-  }
+  },
+
+  lastCollectedScripts: []
 
 };
