@@ -9,65 +9,106 @@ var esFlowOptions = {
   sources: sources,
   sinks: sinks
 };
+var esFlowWorker = new Worker('js/esFlowWorker.js');
+chrome.storage.local.get('lastCollectedScripts', function(db) {
 
-
-$(function() {
-
-  function doEsFlowScan(code, src) {
-    var res = '';
-    var esFlowWorker = new Worker('js/esflow.js');
-    esFlowWorker.addEventListener('message', function(e) {
-      res = e.data;
-      if (res.loggedSources.length > 0) {
-        res.loggedSources.forEach(function(s) {
-          log(s);
-        });
-      }
-
-      if (res.assignmentPairs.length > 0 || res.functionCallPairs.length > 0) {
-        log('----------------- Found issues --------------------');
-        res.assignmentPairs.forEach(function(p) {
-          log('<b>   !! Possible DOM XSS !! : ' + p.source.name + ' assigned to ' + p.sink.name + ' - Line ' + p.lineNumber + '</b>');
-        });
-        res.functionCallPairs.forEach(function(p) {
-          log('<b>   !! Possible DOM XSS !! : ' + p.source.name + ' assigned to ' + p.sink.name + '() - Line ' + p.lineNumber + '</b>');
-        });
-      }
-    });
-
-  }
-
-  var esFlowResults = $('#esFlowResults');
-  var result = '';
-  var log = function(log) {
-    esFlowResults.append(log + '</br>');
-  };
-
-  $('#startStaticAnalysisButton').click(function() {
-    esFlowResults.html('');
+  $(function() {
+    var scriptsFromDB = db.lastCollectedScripts;
+    var esFlowResults = $('#esFlowResults');
+    var log = function(log) {
+      console.log(log);
+      esFlowResults.append(log + '</br>');
+    };
     log('  ');
     log('Collecting JS Scripts from the DOM . . .');
-    chrome.storage.local.get('lastCollectedScripts', function(db) {
-      var scripts = db.lastCollectedScripts;
+
+    function doEsFlowScan(script, cb) {
+      var esFlowWorker = new Worker('js/esFlowWorker.js');
+      var code;
+      var src = script;
+      var res = '';
+
+      try {
+        code = fetchScript(script);
+      } catch (fetchException) {
+        log('Error while fetching the script source');
+        cb();
+      }
+
+      esFlowWorker.addEventListener('message', function(e) {
+        res = e.data;
+        if (res.errMessage) {
+          log(res.errMessage);
+          cb();
+          return;
+        }
+        if (res.loggedSources.length > 0) {
+          res.loggedSources.forEach(function(s) {
+            log(s);
+          });
+        }
+
+        if (res.assignmentPairs.length > 0 || res.functionCallPairs.length > 0) {
+          log('----------------- Found issues --------------------');
+          res.assignmentPairs.forEach(function(p) {
+            log('<b>   !! Possible DOM XSS !! : ' + p.source.name + ' assigned to ' + p.sink.name + ' - Line ' + p.lineNumber + '</b>');
+          });
+          res.functionCallPairs.forEach(function(p) {
+            log('<b>   !! Possible DOM XSS !! : ' + p.source.name + ' assigned to ' + p.sink.name + '() - Line ' + p.lineNumber + '</b>');
+          });
+        }
+        cb();
+      });
+
+      esFlowWorker.postMessage({
+        code: code,
+        src: src,
+        esFlowOptions: esFlowOptions
+      });
+
+    }
+
+
+    $('#startStaticAnalysisButton').click(function() {
+      var scripts = scriptsFromDB.slice();
+      esFlowResults.html('');
       if (scripts.length === 0) {
         log('No scripts to analyze.');
         return;
       }
       console.log('Collected scripts:' + scripts);
       log('Initiating ESFlow . . .');
-      scripts.forEach(function(script) {
-        log('   ');
-        log('Analyzing <i> ' + script + '</i>');
-        doEsFlowScan(fetchScript(script), script);
-      });
+
+
+      iterateScriptsAndScan(scripts);
+      console.log(scripts.length)
+
     });
+
+    var cc = 1;
+
+    function iterateScriptsAndScan(scripts) {
+      log('   ');
+      log('Analyzing <i> ' + scripts[0] + '</i>');
+      doEsFlowScan(scripts[0], function() {
+        console.log(++cc);
+        scripts.shift();
+        log('Finished..');
+        if (scripts.length === 0) {
+          log('Finished scanning all JS code.');
+          return;
+        }
+        iterateScriptsAndScan(scripts);
+      });
+    }
+
+
+    function fetchScript(src) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', src, false);
+      xhr.send();
+      return xhr.responseText;
+    }
+
   });
-
-  function fetchScript(src) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', src, false);
-    xhr.send();
-    return xhr.responseText;
-  }
-
 });
