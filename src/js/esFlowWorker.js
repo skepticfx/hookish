@@ -1,4 +1,5 @@
 importScripts('libs/esflow.js');
+importScripts('libs/beautify.js');
 
 self.addEventListener('message', function(e) {
   var res;
@@ -8,7 +9,7 @@ self.addEventListener('message', function(e) {
     };
   } else {
     try {
-      res = esflow.analyze(e.data.code, e.data.esFlowOptions);
+      res = esflow.analyze(beautify(e.data.code), e.data.esFlowOptions);
     } catch (err) {
       switch (err.description) {
         case 'Unexpected token ILLEGAL':

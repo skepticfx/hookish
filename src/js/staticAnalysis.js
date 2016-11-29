@@ -9,7 +9,6 @@ var esFlowOptions = {
   sources: sources,
   sinks: sinks
 };
-var esFlowWorker = new Worker('js/esFlowWorker.js');
 chrome.storage.local.get('lastCollectedScripts', function(db) {
 
   $(function() {
@@ -85,13 +84,11 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
 
     });
 
-    var cc = 1;
 
     function iterateScriptsAndScan(scripts) {
       log('   ');
-      log('Analyzing <i> ' + scripts[0] + '</i>');
+      log('Analyzing <i><a href="' + scripts[0] + '" target="_blank">' + scripts[0] + '</a> </i>');
       doEsFlowScan(scripts[0], function() {
-        console.log(++cc);
         scripts.shift();
         log('Finished..');
         if (scripts.length === 0) {

@@ -295,31 +295,46 @@ var domHooks = {
       return original_window_setInterval.apply(this, arguments)
     }
   },
+  /*
+    xhr: function() {
+      xhook.enable();
+      xhook.after(function(req, res) {
+        console.log(req);
+        console.log(res);
+
+        var resBody = res.text.toString().trim();
+
+        // **XHR_JSON_RES** - Taint every key-values in JSON response. Will be removed after found in a sink.
+        // Others will remain, which may break flow of the actual app.
+        if (resBody[0] === '{' && resBody[resBody.length - 1] === '}') {
+          resBody = JSON.parse(resBody);
+          Object.keys(resBody).forEach(function(key) {
+            // Tainting all the values of a JSON XHR Response.
+            resBody[key] = resBody[key] + Taints.XHR_JSON_RESPONSE;
+          });
+          resBody = JSON.stringify(resBody);
+        } else {
+          // Non-JSON response. Append taint to the end of string.
+          resBody = resBody.toString() + Taints.XHR_RESPONSE;
+        }
+
+        res.text = resBody.toString();
+        console.log("Modified response: " + res.text);
+
+        track.xhr.add({ // need to add more OBJECTs!!
+          method: req.method,
+          url: req.url,
+          reqBody: req.body
+        });
+      })
+    },
+  */
 
   xhr: function() {
     xhook.enable();
     xhook.after(function(req, res) {
       console.log(req);
       console.log(res);
-
-      var resBody = res.text.toString().trim();
-
-      // **XHR_JSON_RES** - Taint every key-values in JSON response. Will be removed after found in a sink.
-      // Others will remain, which may break flow of the actual app.
-      if (resBody[0] === '{' && resBody[resBody.length - 1] === '}') {
-        resBody = JSON.parse(resBody);
-        Object.keys(resBody).forEach(function(key) {
-          // Tainting all the values of a JSON XHR Response.
-          resBody[key] = resBody[key] + Taints.XHR_JSON_RESPONSE;
-        });
-        resBody = JSON.stringify(resBody);
-      } else {
-        // Non-JSON response. Append taint to the end of string.
-        resBody = resBody.toString() + Taints.XHR_RESPONSE;
-      }
-
-      res.text = resBody.toString();
-      console.log("Modified response: " + res.text);
 
       track.xhr.add({ // need to add more OBJECTs!!
         method: req.method,

@@ -3,9 +3,11 @@ var devMode = false;
 var globalState = false;
 var initDomain = 'damnvulnerable.me';
 
+
+// If devmode
 if (chrome.runtime.getManifest().update_url == null) {
   devMode = true;
-  globalState = true;
+  globalState = false;
   initDomain = 'localhost';
   window.onerror = function(err) {
     alert("Some error occured: " + err);

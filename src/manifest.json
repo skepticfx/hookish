@@ -3,7 +3,7 @@
    "description": "Hooks in to interesting functions and helps reverse the web app faster.",
    "manifest_version": 2,
    "short_name": "Hook Dom sources and sinks.",
-   "version": "0.6.0",
+   "version": "0.6.1",
    "permissions": [
      "tabs",
      "contextMenus",
@@ -16,7 +16,7 @@
         "js/settings.js",
         "js/background.js" ]
    },
-   "content_security_policy":"default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self' https://fonts.gstatic.com; connect-src *",
+   "content_security_policy":"default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; connect-src *",
    "browser_action": {
       "default_icon": {
          "19": "/icons/hook19.png",
