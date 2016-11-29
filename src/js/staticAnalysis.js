@@ -9,6 +9,8 @@ var esFlowOptions = {
   sources: sources,
   sinks: sinks
 };
+var sourceCodes = {};
+
 chrome.storage.local.get('lastCollectedScripts', function(db) {
 
   $(function() {
@@ -21,18 +23,10 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
     log('  ');
     log('Collecting JS Scripts from the DOM . . .');
 
-    function doEsFlowScan(script, cb) {
+    function doEsFlowScan(script, code, codeHash, cb) {
       var esFlowWorker = new Worker('js/esFlowWorker.js');
-      var code;
       var src = script;
       var res = '';
-
-      try {
-        code = fetchScript(script);
-      } catch (fetchException) {
-        log('Error while fetching the script source');
-        cb();
-      }
 
       esFlowWorker.addEventListener('message', function(e) {
         res = e.data;
@@ -50,10 +44,10 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
         if (res.assignmentPairs.length > 0 || res.functionCallPairs.length > 0) {
           log('----------------- Found issues --------------------');
           res.assignmentPairs.forEach(function(p) {
-            log('<b>   !! Possible DOM XSS !! : ' + p.source.name + ' assigned to ' + p.sink.name + ' - Line ' + p.lineNumber + '</b>');
+            log('<b>   !! Possible DOM XSS !! : ' + p.source.name + ' assigned to ' + p.sink.name + ' - <a target="_blank" href="/sourceview.html?code=' + codeHash + ',' + p.lineNumber + '" > Line ' + p.lineNumber + '</a></b>');
           });
           res.functionCallPairs.forEach(function(p) {
-            log('<b>   !! Possible DOM XSS !! : ' + p.source.name + ' assigned to ' + p.sink.name + '() - Line ' + p.lineNumber + '</b>');
+            log('<b>   !! Possible DOM XSS !! : ' + p.source.name + ' assigned to ' + p.sink.name + ' - <a target="_blank" href="/sourceview.html?code=' + codeHash + ',' + p.lineNumber + '" > Line ' + p.lineNumber + '</a></b>');
           });
         }
         cb();
@@ -80,15 +74,28 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
 
 
       iterateScriptsAndScan(scripts);
-      console.log(scripts.length)
-
     });
 
-
+    // the scripts array is shifted every time a script is processed.
     function iterateScriptsAndScan(scripts) {
+      var code;
+      var script = scripts[0];
+      var codeHash = script.hashCode();
       log('   ');
-      log('Analyzing <i><a href="' + scripts[0] + '" target="_blank">' + scripts[0] + '</a> </i>');
-      doEsFlowScan(scripts[0], function() {
+      log('Analyzing <i><a href="/sourceview.html?code=' + codeHash + '" target="_blank">' + script + '</a> </i>');
+      try {
+        code = fetchScript(script);
+        sourceCodes[codeHash] = beautify(code);
+        chrome.storage.local.set({
+          "sourceCodes": sourceCodes
+        });
+      } catch (fetchException) {
+        log('Error while fetching the script source');
+        scripts.shift();
+        iterateScriptsAndScan(scripts);
+        return;
+      }
+      doEsFlowScan(script, code, codeHash, function() {
         scripts.shift();
         log('Finished..');
         if (scripts.length === 0) {
@@ -109,3 +116,16 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
 
   });
 });
+
+
+String.prototype.hashCode = function() {
+  var hash = 0,
+    i, chr, len;
+  if (this.length === 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr = this.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
