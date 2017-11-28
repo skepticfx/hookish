@@ -139,26 +139,26 @@ var domHooks = {
     var hash_getter = document.location.__lookupGetter__('hash');
     Object.defineProperty(location, "hash", {
       get: function() {
-          var h = hash_getter.apply(this, arguments);
-          track.customHook.add(new Object({
-            'type': 'source',
-            'data': h,
-            'section': 'sources',
-            'meta': functionCallTracer()
-          }), 'document_location_hash');
-          return h;
-        }
-        /*
-        ,
-        set: function(val) {
-          track.customHook.add(new Object({
-            'type': 'sink',
-            'data': val,
-            'section': 'sinks',
-            'meta': functionCallTracer()
-          }), 'document_location_hash');
-          return hash_getter.apply(this, arguments);
-        }*/
+        var h = hash_getter.apply(this, arguments);
+        track.customHook.add(new Object({
+          'type': 'source',
+          'data': h,
+          'section': 'sources',
+          'meta': functionCallTracer()
+        }), 'document_location_hash');
+        return h;
+      }
+      /*
+      ,
+      set: function(val) {
+        track.customHook.add(new Object({
+          'type': 'sink',
+          'data': val,
+          'section': 'sinks',
+          'meta': functionCallTracer()
+        }), 'document_location_hash');
+        return hash_getter.apply(this, arguments);
+      }*/
 
     });
   },

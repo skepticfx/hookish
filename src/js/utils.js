@@ -321,10 +321,10 @@ function setupContextMenu() {
 
   // Right click the container
   $(document).on("contextmenu", ".showRowOptions", function(e) {
-      e.preventDefault();
-      contextmenu.show(menu, this.clientX, this.clientY);
-    })
-    //contextmenu.attach($(".showRowOptions"), menu);
+    e.preventDefault();
+    contextmenu.show(menu, this.clientX, this.clientY);
+  })
+  //contextmenu.attach($(".showRowOptions"), menu);
 }
 
 // Real Utils.

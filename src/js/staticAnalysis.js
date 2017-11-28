@@ -22,6 +22,7 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
       esFlowResults.append(log + '</br>');
     };
     log('');
+
     function doEsFlowScan(script, code, codeHash, resultDiv, cb) {
       let esFlowWorker = new Worker('js/esFlowWorker.js');
       let src = script;
@@ -58,7 +59,7 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
         src: src,
         esFlowOptions: esFlowOptions
       });
-      esFlowWorker.stopScan = function(){
+      esFlowWorker.stopScan = function() {
         esFlowWorker.terminate();
         cb();
       }
@@ -88,10 +89,10 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
         iterateScriptsAndScan(scripts);
         return;
       }
-      let worker = doEsFlowScan(script, code, codeHash, resultDiv,  function() {
+      let worker = doEsFlowScan(script, code, codeHash, resultDiv, function() {
         scripts.shift();
-        let div = $('#worker_'+id);
-        if(div.children().first().is('button')){
+        let div = $('#worker_' + id);
+        if (div.children().first().is('button')) {
           div.remove();
           resultDiv.append('</br></br>Finished..');
         }
@@ -102,9 +103,9 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
         iterateScriptsAndScan(scripts);
       });
 
-      esFlowResults.append('<div id="worker_'+ id +'"><button>Stop</button></div>');
+      esFlowResults.append('<div id="worker_' + id + '"><button>Stop</button></div>');
 
-      $('#worker_'+id).click(function(){
+      $('#worker_' + id).click(function() {
         $(this).html("Stopped");
         worker.stopScan();
       });
