@@ -19,7 +19,7 @@ self.addEventListener('message', function(e) {
           break;
         default:
           res = {
-            errMessage: 'An exception occured while analyzing the code on ' + e.data.src
+            errMessage: 'An exception occurred while analyzing the code on ' + e.data.src
           };
           console.log(err.stack);
       }
