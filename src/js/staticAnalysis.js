@@ -4,7 +4,16 @@
  * Sources and Sinks
  */
 let sources = ['document.cookie', 'location.href', 'location.hash', 'window.name', 'location', 'XMLHttpRequest'];
-let sinks = ['.innerHTML', '.outerHTML', '$', 'jQuery', 'eval', 'setTimeout', 'document.write', 'location'];
+let sinks = ['.innerHTML', '.outerHTML', '$', 'jQuery', 'eval', 'setTimeout', 'document.write', 'location', 'append'];
+
+const wellKnownScripts = [
+  'google-analytics.com',
+  'googletagmanager.com',
+  'googleadservices.com',
+  'googleads.g.doubleclick.net'
+];
+
+
 let esFlowOptions = {
   sources: sources,
   sinks: sinks
@@ -12,13 +21,13 @@ let esFlowOptions = {
 let sourceCodes = {};
 let id = 0;
 
-chrome.storage.local.get('lastCollectedScripts', function(db) {
+chrome.storage.local.get(null, function(db) {
   let scriptsFromDB = db.lastCollectedScripts;
+  let url = db.lastCollectedScriptsPageUrl;
 
   $(function() {
     let esFlowResults = $('#esFlowResults');
     let log = function(log) {
-      console.log(log);
       esFlowResults.append(log + '</br>');
     };
     log('');
@@ -129,8 +138,16 @@ chrome.storage.local.get('lastCollectedScripts', function(db) {
       return;
     }
     console.log('Collected scripts:' + scripts);
+    log("Fetched all external scripts for <span class='url'>" + url + "</span>");
     log('Initiating ESFlow . . .');
 
+    console.log(scripts)
+    scripts = scripts.filter(script => {
+      for(let i=0; i<wellKnownScripts.length; i++){
+        if(script.includes(wellKnownScripts[i])) return false
+      }
+      return true
+    })
     iterateScriptsAndScan(scripts);
   });
 });
@@ -147,3 +164,5 @@ String.prototype.hashCode = function() {
   }
   return hash;
 };
+
+

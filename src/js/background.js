@@ -98,6 +98,7 @@ chrome.contextMenus.onClicked.addListener(function(info, tabs) {
     }, function(scripts) {
       scripts = scripts[0];
       db.lastCollectedScripts = scripts;
+      db.lastCollectedScriptsPageUrl = info.pageUrl;
       chrome.storage.local.set(db);
       chrome.tabs.create({
         url: chrome.extension.getURL('staticAnalysis.html')
