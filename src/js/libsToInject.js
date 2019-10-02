@@ -117,7 +117,7 @@ var libsToInject = {
             for (a in e) d = e[a], B.headers[a] || (c = a.toLowerCase(), B.headers[c] = d)
           }
         }, w = function() {
-          "responseText" in H && (B.text = H.responseText), "responseXML" in H && (B.xml = H.responseXML), "response" in H && (B.data = H.response)
+          "responseText" in H && H.responseType != 'json' && (B.text = H.responseText), "responseXML" in H && H.responseType != 'json' && (B.xml = H.responseXML), "response" in H && (B.data = H.response)
         }, G = function() {
           q.status = B.status, q.statusText = B.statusText
         }, F = function() {
