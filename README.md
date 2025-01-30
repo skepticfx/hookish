@@ -16,8 +16,6 @@ Tweet me [@skeptic_fx](https://twitter.com/skeptic_fx) to improve Hookish! if yo
 
 The MIT License
 
-Copyright (c) Ahamed Nafeez <ahamed.nafeez@gmail.com>
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, inclu ding without limitation the rights
